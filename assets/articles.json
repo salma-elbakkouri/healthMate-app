@@ -1,0 +1,43 @@
+[
+    {
+      "author": "Samantha Jess",
+      "title": "Why are steroids bad for your fitness journey?",
+      "date": "2 days ago",
+      "views": 700,
+      "image": "steroids",
+      "category": "fitness"
+    },
+    {
+      "author": "John Doe",
+      "title": "What is depression and what can I do about it?",
+      "date": "5 days ago",
+      "views": 1200,
+      "image": "depression",
+      "category": "mental health"
+    },
+    {
+      "author": "Emily Smith",
+      "title": "The Hidden Dangers of Fast and Processed Food",
+      "date": "1 week ago",
+      "views": 900,
+      "image": "burgers",
+      "category": "nutrition"
+    },
+    {
+      "author": "Michael Brown",
+      "title": "Social Anxiety Disorder: More Than Just a Little Shyness",
+      "date": "3 days ago",
+      "views": 1100,
+      "image": "social-anxiety",
+      "category": "mental health"
+    },
+    {
+      "author": "Laura White",
+      "title": "Why You Should Get (and Give) More Hugs",
+      "date": "1 day ago",
+      "views": 1500,
+      "image": "hugging",
+      "category": "wellness"
+    }
+  ]
+  

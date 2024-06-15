@@ -2,6 +2,16 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome } from '@expo/vector-icons'; // For icons
+import articlesData from '../assets/articles.json';
+
+const articleImages = {
+  steroids: require('../assets/steroids.png'),
+  depression: require('../assets/depression.png'),
+  burgers: require('../assets/burgers.png'),
+  'social-anxiety': require('../assets/social-anxiety.png'),
+  hugging: require('../assets/hugging.png'),
+};
+
 
 const Home = () => {
   const [activeCategory, setActiveCategory] = useState('articles');
@@ -15,20 +25,25 @@ const Home = () => {
       case 'articles':
         return (
           <View style={styles.articlesContainer}>
-            {[...Array(4)].map((_, index) => (
+            <View style={styles.articlesTitleContainer}>
+              <Text style={styles.articlesTitle}>Recent Articles</Text>
+              <Text style={styles.viewAllText}>view all</Text>
+            </View>
+            {articlesData.map((article, index) => (
               <View key={index} style={styles.articleCard}>
+                {console.log('Article Image:', articleImages[article.image])}
                 <Image
-                  source={require('../assets/doctor.png')}
+                  source={articleImages[article.image]}
                   style={styles.articleImage}
                 />
                 <View style={styles.articleContent}>
-                  <Text style={styles.articleAuthor}>Samantha Jess</Text>
-                  <Text style={styles.articleTitle}>Why are steroids bad for your fitness journey?</Text>
+                  <Text style={styles.articleAuthor}>{article.author}</Text>
+                  <Text style={styles.articleTitle}>{article.title}</Text>
                   <View style={styles.articleFooter}>
-                    <Text style={styles.articleDate}>2 days ago</Text>
+                    <Text style={styles.articleDate}>{article.date}</Text>
                     <View style={styles.articleViews}>
                       <FontAwesome name="eye" size={12} color="#7582A2" />
-                      <Text style={styles.articleViewsText}>700</Text>
+                      <Text style={styles.articleViewsText}>{article.views}</Text>
                     </View>
                   </View>
                 </View>
@@ -91,12 +106,12 @@ const Home = () => {
               >
                 <FontAwesome
                   name={
-                    category === 'articles' ? 'file-text' :
+                    category === 'articles' ? 'newspaper-o' :
                     category === 'tips' ? 'lightbulb-o' :
-                    category === 'stats' ? 'bar-chart' :
+                    category === 'stats' ? 'pie-chart' :
                     'hashtag'
                   }
-                  size={24}
+                  size={22}
                   color={activeCategory === category ? 'white' : '#79BAD3'}
                 />
               </TouchableOpacity>
@@ -168,26 +183,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 20,
     marginBottom: 20,
+    position: 'relative', 
+    
   },
   contentContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    width: '80%',
+    alignItems: 'center',
+    width: '100%',
   },
   welcomeText: {
     fontSize: 18,
     color: 'white',
     fontWeight: 'bold',
-    marginRight: 10,
+    marginLeft: 20,
+    width: '40%',
+    lineHeight: 25,
   },
   doctorImage: {
-    width: 120,
-    height: 150,
-    resizeMode: 'contain',
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
+    width: 150,
+    height: 180,
+    bottom: 15,
+    right: 14,
   },
   quickActionsContainer: {
     width: '90%',
@@ -206,8 +223,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   category: {
-    width: 70,
-    height: 70,
+    width: 65,
+    height: 65,
     backgroundColor: 'white',
     borderRadius: 22,
     justifyContent: 'center',
@@ -226,18 +243,42 @@ const styles = StyleSheet.create({
   },
   contentScroll: {
     width: '90%',
+    marginTop: 20,
   },
   articlesContainer: {
     alignItems: 'center',
+    marginTop: 10,
+  },
+  articlesTitleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingHorizontal: 6,
+    marginBottom: 10,
+  },
+  articlesTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1E3C42',
+  },
+  viewAllText: {
+    fontSize: 14,
+    color: '#888B94',
   },
   articleCard: {
     flexDirection: 'row',
     backgroundColor: 'white',
     borderRadius: 10,
-    width: 333,
+    width: 315,
     height: 100,
-    marginBottom: 10,
+    marginBottom: 25,
     overflow: 'hidden',
+    shadowColor: '#5C68A6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 4, // For Android shadow
+    boxShadow: '0px 4px 10px rgba(12, 02, 80, 0.1)', // For Web shadow
   },
   articleImage: {
     width: 83,
