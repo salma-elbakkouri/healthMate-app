@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'rea
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome } from '@expo/vector-icons'; // For icons
 import articlesData from '../assets/articles.json';
+import BottomMenu from '../components/BottomMenu';
+
 
 const articleImages = {
   steroids: require('../assets/steroids.png'),
@@ -12,8 +14,7 @@ const articleImages = {
   hugging: require('../assets/hugging.png'),
 };
 
-
-const Home = () => {
+const Home = ({ navigation }) => {
   const [activeCategory, setActiveCategory] = useState('articles');
 
   const handleCategoryPress = (category) => {
@@ -27,15 +28,13 @@ const Home = () => {
           <View style={styles.articlesContainer}>
             <View style={styles.articlesTitleContainer}>
               <Text style={styles.articlesTitle}>Recent Articles</Text>
-              <Text style={styles.viewAllText}>view all</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Articles')}>
+                <Text style={styles.viewAllText}>view all</Text>
+              </TouchableOpacity>
             </View>
-            {articlesData.map((article, index) => (
+            {articlesData.slice(0, 5).map((article, index) => (
               <View key={index} style={styles.articleCard}>
-                {console.log('Article Image:', articleImages[article.image])}
-                <Image
-                  source={articleImages[article.image]}
-                  style={styles.articleImage}
-                />
+                <Image source={articleImages[article.image]} style={styles.articleImage} />
                 <View style={styles.articleContent}>
                   <Text style={styles.articleAuthor}>{article.author}</Text>
                   <Text style={styles.articleTitle}>{article.title}</Text>
@@ -64,72 +63,64 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.whiteHeader}>
-        <View style={styles.headerContent}>
-          <View style={styles.leftContent}>
-            <Text style={styles.usernameText}>Hello username</Text>
-            <Text style={styles.healthText}>Improve Your Health</Text>
-          </View>
-          <View style={styles.rightContent}>
-            <Image
-              source={require('../assets/doctor.png')} // Assuming you have user.png here
-              style={styles.profileImage}
-            />
-          </View>
-        </View>
+  <View style={styles.whiteHeader}>
+    <View style={styles.headerContent}>
+      <View style={styles.leftContent}>
+        <Text style={styles.usernameText}>Hello username</Text>
+        <Text style={styles.healthText}>Improve Your Health</Text>
       </View>
-
-      <LinearGradient
-        colors={['#4E869D', '#C6E3E1']}
-        style={styles.gradientBackground}
-      >
-        <View style={styles.contentContainer}>
-          <Text style={styles.welcomeText}>Welcome to Health Mate</Text>
-          <Image
-            source={require('../assets/doctor.png')}
-            style={styles.doctorImage}
-          />
-        </View>
-      </LinearGradient>
-
-      <View style={styles.quickActionsContainer}>
-        <Text style={styles.quickActionsText}>Quick Actions</Text>
-        <View style={styles.categoriesContainer}>
-          {['articles', 'tips', 'stats', 'records'].map((category) => (
-            <View key={category} style={styles.categoryWrapper}>
-              <TouchableOpacity
-                style={[
-                  styles.category,
-                  activeCategory === category && styles.categoryActive,
-                ]}
-                onPress={() => handleCategoryPress(category)}
-              >
-                <FontAwesome
-                  name={
-                    category === 'articles' ? 'newspaper-o' :
-                    category === 'tips' ? 'lightbulb-o' :
-                    category === 'stats' ? 'pie-chart' :
-                    'hashtag'
-                  }
-                  size={22}
-                  color={activeCategory === category ? 'white' : '#79BAD3'}
-                />
-              </TouchableOpacity>
-              <Text style={[
-                styles.categoryText,
-                activeCategory === category && styles.categoryTextActive,
-              ]}>
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-              </Text>
-            </View>
-          ))}
-        </View>
+      <View style={styles.rightContent}>
+        <Image
+          source={require('../assets/doctor.png')}
+          style={styles.profileImage}
+        />
       </View>
-
-      <ScrollView style={styles.contentScroll}>
-        {renderContent()}
-      </ScrollView>
     </View>
+  </View>
+
+  <LinearGradient colors={['#4E869D', '#C6E3E1']} style={styles.gradientBackground}>
+    <View style={styles.contentContainer}>
+      <Text style={styles.welcomeText}>Welcome to Health Mate</Text>
+      <Image source={require('../assets/doctor.png')} style={styles.doctorImage} />
+    </View>
+  </LinearGradient>
+
+  <View style={styles.quickActionsContainer}>
+    <Text style={styles.quickActionsText}>Quick Actions</Text>
+    <View style={styles.categoriesContainer}>
+      {['articles', 'tips', 'stats', 'records'].map((category) => (
+        <View key={category} style={styles.categoryWrapper}>
+          <TouchableOpacity
+            style={[styles.category, activeCategory === category && styles.categoryActive]}
+            onPress={() => handleCategoryPress(category)}
+          >
+            <FontAwesome
+              name={
+                category === 'articles' ? 'newspaper-o' :
+                category === 'tips' ? 'lightbulb-o' :
+                category === 'stats' ? 'pie-chart' :
+                'hashtag'
+              }
+              size={22}
+              color={activeCategory === category ? 'white' : '#79BAD3'}
+            />
+          </TouchableOpacity>
+          <Text style={[styles.categoryText, activeCategory === category && styles.categoryTextActive]}>
+            {category.charAt(0).toUpperCase() + category.slice(1)}
+          </Text>
+        </View>
+      ))}
+    </View>
+  </View>
+
+  <ScrollView style={styles.contentScroll}>
+    {renderContent()}
+  </ScrollView>
+
+  {/* Include the BottomMenu component */}
+  <BottomMenu />
+</View>
+
   );
 };
 
@@ -137,10 +128,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F7F7F7',
-    alignItems: 'center',
+    alignItems: 'center', 
   },
   whiteHeader: {
-    height: 120,
+    height: 110,
     width: '100%',
     backgroundColor: 'white',
     paddingTop: 20,
@@ -183,8 +174,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 20,
     marginBottom: 20,
+    marginTop: 15,
     position: 'relative', 
-    
   },
   contentContainer: {
     flexDirection: 'row',
@@ -248,6 +239,7 @@ const styles = StyleSheet.create({
   articlesContainer: {
     alignItems: 'center',
     marginTop: 10,
+    marginBottom: 80,
   },
   articlesTitleContainer: {
     flexDirection: 'row',
@@ -278,7 +270,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 4, // For Android shadow
-    boxShadow: '0px 4px 10px rgba(12, 02, 80, 0.1)', // For Web shadow
   },
   articleImage: {
     width: 83,

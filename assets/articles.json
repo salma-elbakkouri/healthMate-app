@@ -38,6 +38,22 @@
       "views": 1500,
       "image": "hugging",
       "category": "wellness"
+    },
+    {
+      "author": "Samantha Jess",
+      "title": "Why are steroids bad for your fitness journey?",
+      "date": "2 days ago",
+      "views": 700,
+      "image": "steroids",
+      "category": "fitness"
+    },
+    {
+      "author": "John Doe",
+      "title": "What is depression and what can I do about it?",
+      "date": "5 days ago",
+      "views": 1200,
+      "image": "depression",
+      "category": "mental health"
     }
   ]
   
