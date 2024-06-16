@@ -21,7 +21,7 @@ const TipDetail = ({ route, navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <FontAwesome name="chevron-left" size={16} color="#1E3C42" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Tip Detail</Text>
+        <Text style={styles.headerTitle}>{tipCategory.subject}</Text>
       </View>
       <ScrollView style={styles.contentScroll}>
         <View style={styles.tipDetailContainer}>
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   tipImage: {
-    textAlign:'center',
+    textAlign: 'center',
     borderRadius: 10,
     marginTop: 10,
     marginBottom: 10,
