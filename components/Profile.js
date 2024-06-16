@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons'; // Import FontAwesome5 for the pen icon
-import { logoutUser } from '../config/authFunctions'; // Import logout function from authFunctions
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage to fetch user data
-import { LinearGradient } from 'expo-linear-gradient'; // Import LinearGradient for creating gradients
+import { FontAwesome5 } from '@expo/vector-icons'; 
+import { logoutUser } from '../config/authFunctions'; 
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import { LinearGradient } from 'expo-linear-gradient'; 
+import BottomMenu from './BottomMenu';
 
 const Profile = ({ navigation }) => {
   const [fullName, setFullName] = useState('');
@@ -96,6 +97,8 @@ const Profile = ({ navigation }) => {
           <Text style={[styles.menuText, styles.logoutText]}>Logout</Text>
         </TouchableOpacity>
       </View>
+
+       <BottomMenu activeScreen={null} /> 
     </View>
   );
 };

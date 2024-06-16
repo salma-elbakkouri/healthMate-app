@@ -1,22 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import BottomMenu from './BottomMenu'; // Import BottomMenu component
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Chat = ({ navigation }) => {
+  const [fullName, setFullName] = useState('');
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const userFullName = await AsyncStorage.getItem('userFullName');
+      console.log('User Full Name:', userFullName); // Log retrieved value for debugging
+      if (userFullName) {
+        setFullName(userFullName);
+      } else {
+        console.log('User full name not found.');
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Top White Header */}
       <View style={styles.whiteHeader}>
         <View style={styles.headerContent}>
           <View style={styles.leftContent}>
-            <Text style={styles.usernameText}>Hello username</Text>
+            <Text style={styles.usernameText}>Hello {fullName}</Text>
             <Text style={styles.healthText}>Improve Your Health</Text>
           </View>
           <View style={styles.rightContent}>
-            <Image
-              source={require('../assets/doctor.png')}
-              style={styles.profileImage}
-            />
+            <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+              <Image
+                source={require('../assets/doctor.png')}
+                style={styles.profileImage}
+              />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -98,7 +121,7 @@ const styles = StyleSheet.create({
     color: '#A4A4A4',
     textAlign: 'center',
     marginHorizontal: 30,
-    lineHeight:23,
+    lineHeight: 23,
     marginBottom: 20,
   },
   chatButton: {
@@ -116,7 +139,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '90%',
-    height:400,
+    height: 400,
   },
 });
 

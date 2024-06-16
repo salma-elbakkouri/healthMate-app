@@ -17,7 +17,7 @@ const Welcome = ({ navigation }) => {
       />
       <View style={styles.whiteContainer}>
         <View style={styles.textContainer}>
-          <Text style={styles.bigText}>Stay Healthy Stay Happy with health AI</Text>
+          <Text style={styles.bigText}>Stay Healthy Stay Happy with Health Mate</Text>
           <Text style={styles.smallText}>We will walk you each step in order to achieve better health</Text>
         </View>
         <TouchableOpacity
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     textAlign:'center',
     color : '#1E3942',
     fontWeight:'bold',
-    fontSize:25,
+    fontSize:21,
     marginBottom:7,
     lineHeight:30,
   },

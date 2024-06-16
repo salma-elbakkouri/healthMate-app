@@ -14,6 +14,7 @@ import Stats from './components/Stats';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import Profile from './components/Profile';
+import EditProfile from './components/EditProfile';
 
 const Stack = createStackNavigator();
 
@@ -34,6 +35,7 @@ const App = () => {
         <Stack.Screen name="TipDetail" component={TipDetail} />
         <Stack.Screen name="Stats" component={Stats} />
         <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="EditProfile" component={EditProfile} />
       </Stack.Navigator>
     </NavigationContainer>
   );
