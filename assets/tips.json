@@ -1,0 +1,79 @@
+[
+    {
+      "subject": "Depression",
+      "image": "depressiontip",
+      "views": 1200,
+      "tips": [
+        {
+          "title": "Regular Exercise",
+          "description": "Do you know that regular exercise can reduce sadness and depression?"
+        },
+        {
+          "title": "Healthy Diet",
+          "description": "Eating a healthy, balanced diet can improve your mood and overall well-being."
+        },
+        {
+          "title": "Adequate Sleep",
+          "description": "Ensuring you get enough sleep can significantly impact your mental health positively."
+        }
+      ]
+    },
+    {
+      "subject": "Nutrition",
+      "image": "nutritiontip",
+      "views": 850,
+      "tips": [
+        {
+          "title": "Balanced Diet",
+          "description": "A balanced diet provides essential nutrients that support overall health."
+        },
+        {
+          "title": "Hydration",
+          "description": "Staying hydrated is crucial for maintaining energy levels and concentration."
+        },
+        {
+          "title": "Limit Sugar",
+          "description": "Reducing sugar intake can prevent mood swings and energy crashes."
+        }
+      ]
+    },
+    {
+      "subject": "Cats' Health",
+      "image": "catshealthtip",
+      "views": 950,
+      "tips": [
+        {
+          "title": "Regular Vet Check-ups",
+          "description": "Regular veterinary check-ups are essential for maintaining your cat's health."
+        },
+        {
+          "title": "Proper Nutrition",
+          "description": "Feeding your cat a balanced diet helps in keeping them healthy and active."
+        },
+        {
+          "title": "Play and Exercise",
+          "description": "Engaging your cat in play and exercise keeps them physically and mentally fit."
+        }
+      ]
+    },
+    {
+      "subject": "Social Media",
+      "image": "socialmediatip",
+      "views": 700,
+      "tips": [
+        {
+          "title": "Limit Screen Time",
+          "description": "Limiting screen time can improve your mental health and well-being."
+        },
+        {
+          "title": "Curate Your Feed",
+          "description": "Follow accounts that inspire and motivate you for a more positive experience."
+        },
+        {
+          "title": "Take Breaks",
+          "description": "Regular breaks from social media can reduce stress and improve focus."
+        }
+      ]
+    }
+  ]
+  

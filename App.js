@@ -7,6 +7,8 @@ import Chat from './components/Chat';
 import Reminder from './components/Reminder';
 import Notifications from './components/Notifications';
 import ArticleDetail from './components/ArticleDetail';
+import Tips from './components/Tips';
+import TipDetail from './components/TipDetail';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +22,8 @@ const App = () => {
         <Stack.Screen name="Chat" component={Chat} />
         <Stack.Screen name="Reminder" component={Reminder} />
         <Stack.Screen name="Notifications" component={Notifications} />
+        <Stack.Screen name="Tips" component={Tips} />
+        <Stack.Screen name="TipDetail" component={TipDetail} />
       </Stack.Navigator>
     </NavigationContainer>
   );

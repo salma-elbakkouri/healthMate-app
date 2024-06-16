@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'rea
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome } from '@expo/vector-icons'; // For icons
 import articlesData from '../assets/articles.json';
+import tipsData from '../assets/tips.json'; 
 import BottomMenu from '../components/BottomMenu';
 
 const articleImages = {
@@ -11,6 +12,13 @@ const articleImages = {
   burgers: require('../assets/burgers.png'),
   'social-anxiety': require('../assets/social-anxiety.png'),
   hugging: require('../assets/hugging.png'),
+};
+
+const tipImages = {
+  depressiontip: require('../assets/depressiontip.png'),
+  nutritiontip: require('../assets/nutritiontip.png'),
+  catshealthtip: require('../assets/catshealthtip.png'),
+  socialmediatip: require('../assets/socialmediatip.png'),
 };
 
 const Home = ({ navigation }) => {
@@ -54,7 +62,34 @@ const Home = ({ navigation }) => {
           </View>
         );
       case 'tips':
-        return <Text style={styles.placeholderText}>Tips Content</Text>;
+        return (
+          <View style={styles.tipsContainer}>
+            <View style={styles.articlesTitleContainer}>
+              <Text style={styles.articlesTitle}>Famous Topics</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Tips')}>
+                <Text style={styles.viewAllText}>view all</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.tipsContent}>
+              {tipsData.map((tip, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.tipCard}
+                  onPress={() => navigation.navigate('TipDetail', { tipId: index })}
+                >
+                  <Image source={tipImages[tip.image]} style={styles.tipImage} />
+                  <View style={styles.tipOverlay}>
+                    <Text style={styles.tipSubject}>{tip.subject}</Text>
+                    <View style={styles.tipViews}>
+                      <FontAwesome name="eye" size={12} color="white" />
+                      <Text style={styles.viewsText}>{`${tip.views} views`}</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        );
       case 'stats':
         return <Text style={styles.placeholderText}>Stats Content</Text>;
       case 'records':
@@ -319,6 +354,57 @@ const styles = StyleSheet.create({
   placeholderText: {
     fontSize: 16,
     color: '#888B94',
+  },
+  tipsContainer: {
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 80,
+  },
+  tipsContent: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingHorizontal: 5,
+  },
+  tipCard: {
+    width: '48%',
+    height: 150,
+    marginBottom: 15,
+    borderRadius: 10,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  tipImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  tipOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    borderRadius: 10,
+  },
+  tipSubject: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  tipViews: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  viewsText: {
+    color: 'white',
+    fontSize: 12,
+    marginLeft: 5,
   },
 });
 
