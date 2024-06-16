@@ -19,6 +19,9 @@ import EditProfile from './components/EditProfile';
 const Stack = createStackNavigator();
 
 const App = () => {
+
+  console.disableYellowBox = true;
+
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>

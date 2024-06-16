@@ -5,14 +5,11 @@ import { logoutUser } from '../config/authFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import { LinearGradient } from 'expo-linear-gradient'; 
 import BottomMenu from './BottomMenu';
+import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect hook
 
 const Profile = ({ navigation }) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-
-  useEffect(() => {
-    fetchUserData();
-  }, []);
 
   const fetchUserData = async () => {
     try {
@@ -28,6 +25,17 @@ const Profile = ({ navigation }) => {
       console.error('Error fetching user data:', error);
     }
   };
+
+  useEffect(() => {
+    fetchUserData(); // Fetch initial user data on component mount
+  }, []);
+
+  // Use useFocusEffect to reload data on screen focus
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUserData(); // Fetch user data whenever the screen gains focus
+    }, [])
+  );
 
   const confirmLogout = () => {
     Alert.alert(
@@ -98,7 +106,7 @@ const Profile = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-       <BottomMenu activeScreen={null} /> 
+      <BottomMenu activeScreen={null} /> 
     </View>
   );
 };
@@ -114,8 +122,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 30,
     paddingHorizontal: 20,
-    marginHorizontal:20,
-    borderRadius:20,
+    marginHorizontal: 20,
+    borderRadius: 20,
   },
   profileImageContainer: {
     width: 90,

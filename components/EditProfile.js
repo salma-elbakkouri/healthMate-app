@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons'; // For icons
-import AsyncStorage from '@react-native-async-storage/async-storage'; // AsyncStorage
-import { firestore, auth } from '../config/firebaseConfig'; // Firebase configuration
+import { FontAwesome, Entypo } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { firestore, auth } from '../config/firebaseConfig';
 import { doc, updateDoc } from "firebase/firestore";
+import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
 
 const EditProfile = ({ navigation }) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [loading, setLoading] = useState(true); // State to manage Firebase initialization
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [image, setImage] = useState(require('../assets/doctor.png'));
 
   useEffect(() => {
     fetchUserData();
@@ -25,14 +29,20 @@ const EditProfile = ({ navigation }) => {
         setEmail(userEmail);
       } else {
         console.log('User data not found in AsyncStorage, fetching from Firestore...');
-        console.log('Auth user:', auth.currentUser); // Check if current user is authenticated
-
-        // Fetch user data from Firestore
+        console.log('Auth user:', auth.currentUser);
+  
         const userDoc = await firestore.collection('users').doc(auth.currentUser.uid).get();
         if (userDoc.exists) {
           const userData = userDoc.data();
           setFullName(userData.fullName);
           setEmail(userData.email);
+          // Check if profileImage exists and set the image state accordingly
+          if (userData.profileImage) {
+            setImage({ uri: userData.profileImage });
+          } else {
+            // Set a default image if profileImage is null
+            setImage(require('../assets/doctor.png')); // Replace with your default image path
+          }
         } else {
           console.log('No such document!');
         }
@@ -45,55 +55,81 @@ const EditProfile = ({ navigation }) => {
   };
 
   const handleUpdate = async () => {
-    try {
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
-        throw new Error('User not authenticated.');
-      }
-
-      // Update user data in Firestore
-      await updateDoc(doc(firestore, 'users', currentUser.uid), {
-        fullName: fullName,
-      });
-
-      // Update AsyncStorage if needed
-      await AsyncStorage.setItem('userFullName', fullName);
-
-      // Display success message
-      Alert.alert('Profile Updated', 'Your profile has been updated successfully.');
-      navigation.navigate('Profile');
-
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      Alert.alert('Update Error', 'Failed to update profile. Please try again later.');
-    }
-
-
-    try {
+    if (!currentPassword && !newPassword && !confirmNewPassword) {
+      // If password fields are empty, update only the full name
+      try {
         const currentUser = auth.currentUser;
         if (!currentUser) {
           throw new Error('User not authenticated.');
         }
-  
-        // Reauthenticate user with current password
-        const credential = await auth.EmailAuthProvider.credential(currentUser.email, currentPassword);
-        await currentUser.reauthenticateWithCredential(credential);
-  
-        // Change user password
-        await currentUser.updatePassword(newPassword);
-  
-        // Display success message
-        Alert.alert('Password Updated', 'Your password has been updated successfully.');
+
+        await updateDoc(doc(firestore, 'users', currentUser.uid), {
+          fullName: fullName,
+        });
+
+        await AsyncStorage.setItem('userFullName', fullName);
+
+        Alert.alert('Profile Updated', 'Your profile has been updated successfully.');
+        navigation.navigate('Profile');
+
+      } catch (error) {
+        console.error('Error updating profile:', error);
+        Alert.alert('Update Error', 'Failed to update profile. Please try again later.');
+      }
+    } else {
+      // If current password is filled, validate and update the password
+      if (!currentPassword || !newPassword || !confirmNewPassword) {
+        Alert.alert('Incomplete Password Fields', 'Please fill in all password fields.');
+        return;
+      }
+
+      if (newPassword !== confirmNewPassword) {
+        Alert.alert('Password Mismatch', 'New password and confirm password do not match.');
+        return;
+      }
+
+      try {
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+          throw new Error('User not authenticated.');
+        }
+
+        const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+        await reauthenticateWithCredential(currentUser, credential);
+
+        await updatePassword(currentUser, newPassword);
+
+        await updateDoc(doc(firestore, 'users', currentUser.uid), {
+          fullName: fullName,
+        });
+
+        await AsyncStorage.setItem('userFullName', fullName);
+
+        Alert.alert('Profile Updated', 'Your profile has been updated successfully.');
         setNewPassword('');
         setCurrentPassword('');
-  
+        setConfirmNewPassword('');
+        navigation.navigate('Profile');
+
       } catch (error) {
         console.error('Error updating password:', error);
         Alert.alert('Password Update Error', 'Failed to update password. Please check your current password and try again.');
       }
+    }
   };
 
-  
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage({ uri: result.uri });
+    }
+  };
 
   if (loading) {
     return (
@@ -105,7 +141,6 @@ const EditProfile = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Top White Header */}
       <View style={styles.whiteHeader}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <FontAwesome name="chevron-left" size={16} color="#1E3C42" />
@@ -113,17 +148,15 @@ const EditProfile = ({ navigation }) => {
         <Text style={styles.headerTitle}>Edit Profile</Text>
       </View>
 
-      {/* Doctor Image */}
       <View style={styles.doctorImageContainer}>
-        <Image source={require('../assets/doctor.png')} style={styles.doctorImage} />
+        <TouchableOpacity onPress={pickImage}>
+          <Image source={image} style={styles.doctorImage} />
+          <View style={styles.cameraIconContainer}>
+            <Entypo name="camera" size={24} color="#4E869D" />
+          </View>
+        </TouchableOpacity>
       </View>
 
-      {/* Edit Avatar Button */}
-      <TouchableOpacity style={styles.editAvatarButton}>
-        <Text style={styles.editAvatarButtonText}>Edit Avatar</Text>
-      </TouchableOpacity>
-
-      {/* Full Name Input */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>User infos</Text>
         <TextInput
@@ -135,18 +168,16 @@ const EditProfile = ({ navigation }) => {
         />
       </View>
 
-      {/* Email Input (Disabled) */}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
           placeholder="Enter your email address"
           placeholderTextColor="#B9C6D3"
           value={email}
-          editable={false} // Make the email input disabled
+          editable={false}
         />
       </View>
 
-      {/* Current Password Input */}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -158,7 +189,6 @@ const EditProfile = ({ navigation }) => {
         />
       </View>
 
-      {/* New Password Input */}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -170,12 +200,20 @@ const EditProfile = ({ navigation }) => {
         />
       </View>
 
-      {/* Update Profile Button */}
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm your new password"
+          placeholderTextColor="#B9C6D3"
+          secureTextEntry={true}
+          value={confirmNewPassword}
+          onChangeText={setConfirmNewPassword}
+        />
+      </View>
+
       <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
         <Text style={styles.updateButtonText}>Update Profile</Text>
       </TouchableOpacity>
-
-      
     </View>
   );
 };
@@ -204,24 +242,21 @@ const styles = StyleSheet.create({
   },
   doctorImageContainer: {
     marginTop: 20,
+    position: 'relative',
   },
   doctorImage: {
     width: 120,
     height: 115,
     borderRadius: 70,
   },
-  editAvatarButton: {
-    borderWidth: 1,
-    borderColor: '#1E3C42',
-    paddingHorizontal: 15,
-    paddingVertical: 7,
-    marginTop: 20,
-    borderRadius: 3,
-  },
-  editAvatarButtonText: {
-    color: '#1E3C42',
-    fontSize: 14,
-  },
+  cameraIconContainer: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        backgroundColor: 'white',
+        borderRadius: 50,
+        padding: 8,
+      },
   inputContainer: {
     width: '80%',
     marginTop: 20,

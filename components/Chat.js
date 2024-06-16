@@ -27,7 +27,7 @@ const Chat = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* Top White Header */}
-      <View style={styles.whiteHeader}>
+      {/* <View style={styles.whiteHeader}>
         <View style={styles.headerContent}>
           <View style={styles.leftContent}>
             <Text style={styles.usernameText}>Hello {fullName}</Text>
@@ -42,7 +42,7 @@ const Chat = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </View> */}
 
       {/* Main Content */}
       <View style={styles.content}>
@@ -69,45 +69,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F7F7F7',
   },
-  whiteHeader: {
-    height: 110,
-    width: '100%',
-    backgroundColor: 'white',
-    paddingTop: 20,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  leftContent: {
-    flex: 1,
-  },
-  usernameText: {
-    fontSize: 14,
-    color: '#888B94',
-  },
-  healthText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1E3C42',
-  },
-  rightContent: {
-    marginLeft: 10,
-  },
-  profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
+ 
+  
+  
   content: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   boldText: {
@@ -129,7 +96,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 30,
-    marginBottom: 20,
+    marginBottom: 100,
   },
   chatButtonText: {
     color: 'white',
@@ -140,6 +107,7 @@ const styles = StyleSheet.create({
   image: {
     width: '90%',
     height: 400,
+    bottom:50,
   },
 });
 
