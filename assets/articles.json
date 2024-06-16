@@ -1,59 +1,67 @@
 [
-    {
-      "author": "Samantha Jess",
-      "title": "Why are steroids bad for your fitness journey?",
-      "date": "2 days ago",
-      "views": 700,
-      "image": "steroids",
-      "category": "fitness"
-    },
-    {
-      "author": "John Doe",
-      "title": "What is depression and what can I do about it?",
-      "date": "5 days ago",
-      "views": 1200,
-      "image": "depression",
-      "category": "mental health"
-    },
-    {
-      "author": "Emily Smith",
-      "title": "The Hidden Dangers of Fast and Processed Food",
-      "date": "1 week ago",
-      "views": 900,
-      "image": "burgers",
-      "category": "nutrition"
-    },
-    {
-      "author": "Michael Brown",
-      "title": "Social Anxiety Disorder: More Than Just a Little Shyness",
-      "date": "3 days ago",
-      "views": 1100,
-      "image": "social-anxiety",
-      "category": "mental health"
-    },
-    {
-      "author": "Laura White",
-      "title": "Why You Should Get (and Give) More Hugs",
-      "date": "1 day ago",
-      "views": 1500,
-      "image": "hugging",
-      "category": "wellness"
-    },
-    {
-      "author": "Samantha Jess",
-      "title": "Why are steroids bad for your fitness journey?",
-      "date": "2 days ago",
-      "views": 700,
-      "image": "steroids",
-      "category": "fitness"
-    },
-    {
-      "author": "John Doe",
-      "title": "What is depression and what can I do about it?",
-      "date": "5 days ago",
-      "views": 1200,
-      "image": "depression",
-      "category": "mental health"
-    }
-  ]
-  
+  {
+    "author": "Samantha Jess",
+    "title": "Why are steroids bad for your fitness journey?",
+    "date": "2 days ago",
+    "views": 700,
+    "image": "steroids",
+    "imagebig": "steroidsbig",
+    "category": "fitness",
+    "description": "Steroids, though often touted for their muscle-enhancing abilities, can have serious and detrimental side effects that far outweigh any potential benefits they may offer in a fitness journey. The misuse of these substances can lead to a range of physical and psychological issues that can hinder rather than help your progress. Understanding the risks associated with steroid use is crucial for anyone considering them as part of their fitness regimen.",
+    "symptoms": "The misuse of steroids can result in severe mood swings, making it difficult to maintain stable emotional health. Additionally, there is an increased risk of heart disease, which can have long-term consequences on your cardiovascular system. Liver damage is another critical concern, as steroids can cause toxic effects that impair liver function and overall health.",
+    "solutions": "Seeking professional medical advice is essential for anyone experiencing adverse effects from steroid use. Opting for natural supplements and alternative methods to enhance performance and muscle growth can provide safer and more sustainable results. Professionals can guide you through a healthy and effective fitness plan that aligns with your goals without compromising your health. ",
+    "tips": "Maintaining a balanced diet rich in nutrients is fundamental to achieving fitness goals. Following a regular exercise regimen tailored to your needs can help you stay on track. Additionally, focusing on natural methods of muscle enhancement and recovery can ensure long-term success and well-being"
+  },
+  {
+    "author": "John Doe",
+    "title": "What is depression and what can I do about it?",
+    "date": "5 days ago",
+    "views": 1200,
+    "image": "depression",
+    "imagebig": "depressionbig",
+    "category": "mental health",
+    "description": "Depression is a pervasive and often misunderstood mental health disorder that significantly impacts an individual's mood, thoughts, and behavior. It goes beyond occasional sadness, affecting daily functioning and overall quality of life. Understanding depression and its far-reaching effects is essential for those suffering from it and for those who wish to support their loved ones through difficult times",
+    "symptoms": "Symptoms of depression include persistent sadness that lasts for weeks or even months, a profound loss of interest in activities that once brought joy, and overwhelming fatigue that makes it hard to get through the day. Additionally, individuals may experience changes in appetite, sleep disturbances, and difficulty concentrating, all of which further complicate their ability to function normally",
+    "solutions": "Consulting a therapist can provide valuable support and strategies for managing depression. Therapy, whether cognitive-behavioral or another form, offers a structured approach to understanding and addressing the underlying causes of depression. In some cases, medication prescribed by a healthcare professional may be necessary to help balance brain chemicals and alleviate symptoms",
+    "tips": "Practicing mindfulness can be incredibly beneficial in managing depressive symptoms. Mindfulness techniques, such as meditation and deep breathing exercises, can help individuals stay grounded and reduce stress. Engaging in regular physical activities, even something as simple as a daily walk, can significantly boost mood and energy levels. Building a support network of friends and family can also provide emotional support and encouragement."
+  },
+  {
+    "author": "Emily Smith",
+    "title": "The Hidden Dangers of Fast and Processed Food",
+    "date": "1 week ago",
+    "views": 900,
+    "image": "burgers",
+    "imagebig": "burgersbig",
+    "category": "nutrition",
+    "description": "Fast and processed foods, while convenient and often delicious, can pose significant risks to your health. These foods are typically high in unhealthy fats, sugars, and sodium, all of which contribute to various health problems. Understanding the hidden dangers of these foods can help you make more informed choices and prioritize your well-being over convenience.",
+    "symptoms": "Consuming fast and processed foods regularly can lead to weight gain due to their high calorie content and low nutritional value. This weight gain is often accompanied by high blood pressure, which increases the risk of heart disease and stroke. Digestive problems are also common, as these foods often lack the fiber necessary for healthy digestion, leading to issues such as constipation and bloating",
+    "solutions": "One of the best ways to combat the negative effects of fast and processed foods is to cook meals at home using fresh, whole ingredients. This approach allows you to control the ingredients and ensure that your meals are nutritious and balanced. Choosing whole foods, such as fruits, vegetables, whole grains, and lean proteins, can provide your body with the nutrients it needs to function optimally",
+    "tips": "Reading food labels can help you avoid hidden sugars, unhealthy fats, and excessive sodium. Opting for water or natural beverages instead of sugary drinks can also make a significant difference in your overall health. Planning your meals and snacks in advance can prevent the temptation to reach for fast food when you're in a hurry or feeling hungry."
+  },
+  {
+    "author": "Michael Brown",
+    "title": "Social Anxiety Disorder: More Than Just a Little Shyness",
+    "date": "3 days ago",
+    "views": 1100,
+    "image": "social-anxiety",
+    "imagebig": "social-anxietybig",
+    "category": "mental health",
+    "description": "Social anxiety disorder is a chronic mental health condition that goes far beyond ordinary shyness. It involves intense fear and avoidance of social situations due to feelings of embarrassment, self-consciousness, and fear of being judged or scrutinized by others. This disorder can significantly impact one's ability to form relationships, perform daily activities, and enjoy life",
+    "symptoms": "People with social anxiety disorder often experience intense fear in social situations, which can lead to physical symptoms such as sweating, trembling, and a rapid heartbeat. These symptoms are not only distressing but can also be debilitating, making it difficult for individuals to engage in everyday activities, such as attending social gatherings, speaking in public, or even making eye contact",
+    "solutions": "Therapy, particularly cognitive-behavioral therapy (CBT), is highly effective in treating social anxiety disorder. CBT helps individuals identify and challenge negative thought patterns and gradually face their fears in a controlled and supportive environment. Medication, such as antidepressants or anti-anxiety drugs, may also be prescribed to help manage symptoms. Support groups can provide a sense of community and understanding, which can be incredibly comforting for those with social anxiety",
+    "tips": "Practicing deep breathing techniques and mindfulness exercises can help reduce anxiety symptoms in the moment. Gradually exposing oneself to social situations, starting with less intimidating scenarios and working up to more challenging ones, can help build confidence and reduce fear over time. Seeking support from friends, family, or a therapist can provide encouragement and practical strategies for managing anxiety"
+  },
+  {
+    "author": "Laura White",
+    "title": "Why You Should Get (and Give) More Hugs",
+    "date": "1 day ago",
+    "views": 1500,
+    "image": "hugging",
+    "imagebig": "huggingbig",
+    "category": "wellness",
+    "description": "Hugs are more than just a simple gesture of affection; they have profound effects on both mental and physical health. Scientific studies have shown that hugging can reduce stress, lower blood pressure, and even boost the immune system. Embracing the power of hugs can lead to a happier, healthier life and strengthen your connections with others",
+    "symptoms": "Regularly giving and receiving hugs can lead to increased happiness and reduced stress levels. Hugs trigger the release of oxytocin, the love hormone, which promotes feelings of bonding and well-being. Additionally, hugs can reduce levels of the stress hormone cortisol, leading to a calmer and more relaxed state of mind",
+    "solutions": "To reap the benefits of hugs, try to incorporate them into your daily routine. Make a conscious effort to hug your loved ones more often, whether it's a quick embrace before leaving for work or a longer hug after a challenging day. Expressing affection through hugs can strengthen relationships and provide comfort and support in times of need.",
+    "tips": "Be open to physical touch and don't hesitate to initiate hugs. While it might feel awkward at first, most people appreciate the gesture and will likely respond positively. Pay attention to body language and respect personal boundaries, ensuring that hugs are welcome and appropriate. Embracing the power of touch can enhance your emotional well-being and create a more connected and supportive environment"
+  }
+]

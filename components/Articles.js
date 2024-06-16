@@ -23,8 +23,12 @@ const Articles = ({ navigation }) => {
       </View>
       <ScrollView style={styles.contentScroll}>
         <View style={styles.articlesContainer}>
-          {articlesData.slice(0, 7).map((article, index) => (
-            <View key={index} style={styles.articleCard}>
+          {articlesData.map((article, index) => (
+            <TouchableOpacity 
+              key={index} 
+              style={styles.articleCard} 
+              onPress={() => navigation.navigate('ArticleDetail', { articleId: index })}
+            >
               <Image source={articleImages[article.image]} style={styles.articleImage} />
               <View style={styles.articleContent}>
                 <Text style={styles.articleAuthor}>{article.author}</Text>
@@ -37,12 +41,11 @@ const Articles = ({ navigation }) => {
                   </View>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>
 
-      {/* Include the BottomMenu component */}
       <BottomMenu />
     </View>
   );
