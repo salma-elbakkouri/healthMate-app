@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E3942',
     paddingVertical: 12,
     paddingHorizontal: 25,
-    borderRadius: 10,
+    borderRadius: 30,
     marginBottom: 20,
   },
   chatButtonText: {

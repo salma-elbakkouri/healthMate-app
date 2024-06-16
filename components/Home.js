@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { FontAwesome } from '@expo/vector-icons'; // For icons
+import { FontAwesome } from '@expo/vector-icons';
 import articlesData from '../assets/articles.json';
-import tipsData from '../assets/tips.json'; 
+import tipsData from '../assets/tips.json';
 import BottomMenu from '../components/BottomMenu';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const articleImages = {
   steroids: require('../assets/steroids.png'),
@@ -21,11 +23,76 @@ const tipImages = {
   socialmediatip: require('../assets/socialmediatip.png'),
 };
 
+
+
+
 const Home = ({ navigation }) => {
   const [activeCategory, setActiveCategory] = useState('articles');
+  const [statsData, setStatsData] = useState([]);
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const [fullName, setFullName] = useState('');
+
+
 
   const handleCategoryPress = (category) => {
     setActiveCategory(category);
+  };
+
+
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const userFullName = await AsyncStorage.getItem('userFullName');
+      console.log('User Full Name:', userFullName); // Log retrieved value for debugging
+      if (userFullName) {
+        setFullName(userFullName);
+      } else {
+        console.log('User full name not found.');
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
+
+
+
+
+
+  const parseFitnessData = (data) => {
+    // Implement your logic to parse and format the data from Fitness API
+    // Example:
+    const formattedStats = [
+      { label: 'Calories Burned', value: '2000 kcal' },
+      { label: 'Steps Taken', value: '15000 steps' },
+      { label: 'Water Consumed', value: '2.5 liters' },
+      { label: 'Hours Slept', value: '8 hours' },
+      { label: 'Workouts Completed', value: '5 workouts' },
+    ];
+    return formattedStats;
+  };
+
+  const renderStats = () => {
+    return (
+      <View style={styles.statsContainer}>
+        <View style={styles.articlesTitleContainer}>
+          <Text style={styles.articlesTitle}>Today's Stats</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Stats')}>
+            <Text style={styles.viewAllText}>view all</Text>
+          </TouchableOpacity>
+        </View>
+        {statsData.map((stat, index) => (
+          <View key={index} style={styles.statCard}>
+            <Text style={styles.statLabel}>{stat.label}</Text>
+            <Text style={styles.statValue}>{stat.value}</Text>
+          </View>
+        ))}
+      </View>
+    );
   };
 
   const renderContent = () => {
@@ -91,7 +158,7 @@ const Home = ({ navigation }) => {
           </View>
         );
       case 'stats':
-        return <Text style={styles.placeholderText}>Stats Content</Text>;
+        return renderStats(); // Render the stats component
       case 'records':
         return <Text style={styles.placeholderText}>Records Content</Text>;
       default:
@@ -99,19 +166,22 @@ const Home = ({ navigation }) => {
     }
   };
 
+
   return (
     <View style={styles.container}>
       <View style={styles.whiteHeader}>
         <View style={styles.headerContent}>
           <View style={styles.leftContent}>
-            <Text style={styles.usernameText}>Hello username</Text>
+            <Text style={styles.usernameText}>Hello {fullName}</Text>
             <Text style={styles.healthText}>Improve Your Health</Text>
           </View>
           <View style={styles.rightContent}>
-            <Image
-              source={require('../assets/doctor.png')}
-              style={styles.profileImage}
-            />
+            <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+              <Image
+                source={require('../assets/doctor.png')}
+                style={styles.profileImage}
+              />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -135,9 +205,9 @@ const Home = ({ navigation }) => {
                 <FontAwesome
                   name={
                     category === 'articles' ? 'newspaper-o' :
-                    category === 'tips' ? 'lightbulb-o' :
-                    category === 'stats' ? 'pie-chart' :
-                    'hashtag'
+                      category === 'tips' ? 'lightbulb-o' :
+                        category === 'stats' ? 'pie-chart' :
+                          'hashtag'
                   }
                   size={22}
                   color={activeCategory === category ? 'white' : '#79BAD3'}
@@ -151,11 +221,18 @@ const Home = ({ navigation }) => {
         </View>
       </View>
 
-      <ScrollView style={styles.contentScroll}>
+      <ScrollView
+        style={styles.contentScroll}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16}
+      >
         {renderContent()}
       </ScrollView>
 
-      {/* Include the BottomMenu component */}
+
       <BottomMenu />
     </View>
   );
@@ -306,7 +383,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 4, // For Android shadow
+    elevation: 4,
   },
   articleImage: {
     width: 83,
@@ -405,6 +482,33 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 12,
     marginLeft: 5,
+  },
+  statsContainer: {
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 80,
+  },
+  statCard: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    width: '90%',
+    padding: 15,
+    marginBottom: 10,
+    shadowColor: '#5C68A6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  statLabel: {
+    fontSize: 14,
+    color: '#1E3C42',
+    fontWeight: 'bold',
+  },
+  statValue: {
+    fontSize: 18,
+    color: '#4E869D',
+    marginTop: 5,
   },
 });
 

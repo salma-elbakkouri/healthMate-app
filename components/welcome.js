@@ -23,7 +23,7 @@ const Welcome = ({ navigation }) => {
         <TouchableOpacity
           style={styles.button}
           activeOpacity={0.7}
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => navigation.navigate('Login')}
         >
           <Text style={styles.buttonText}>START NOW</Text>
         </TouchableOpacity>

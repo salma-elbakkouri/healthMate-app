@@ -9,6 +9,11 @@ import Notifications from './components/Notifications';
 import ArticleDetail from './components/ArticleDetail';
 import Tips from './components/Tips';
 import TipDetail from './components/TipDetail';
+import Welcome from './components/welcome';
+import Stats from './components/Stats';
+import Login from './components/Login';
+import SignUp from './components/SignUp';
+import Profile from './components/Profile';
 
 const Stack = createStackNavigator();
 
@@ -16,6 +21,9 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Welcome" component={Welcome} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Articles" component={Articles} />
         <Stack.Screen name="ArticleDetail" component={ArticleDetail} />
@@ -24,6 +32,8 @@ const App = () => {
         <Stack.Screen name="Notifications" component={Notifications} />
         <Stack.Screen name="Tips" component={Tips} />
         <Stack.Screen name="TipDetail" component={TipDetail} />
+        <Stack.Screen name="Stats" component={Stats} />
+        <Stack.Screen name="Profile" component={Profile} />
       </Stack.Navigator>
     </NavigationContainer>
   );
