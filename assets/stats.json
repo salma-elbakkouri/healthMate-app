@@ -1,6 +1,32 @@
 [
-  { "label": "Cancer due to smoking", "value": "2 people" },
-  { "label": "Heart diseases", "value": "5 people" },
-  { "label": "Diabetes", "value": "3 people" },
-  { "label": "Obesity", "value": "7 people" }
+  {
+    "id": 1,
+    "name": "Heart Disease",
+    "image": "heart"
+  },
+  {
+    "id": 2,
+    "name": "Cancer",
+    "image": "cancer"
+  },
+  {
+    "id": 3,
+    "name": "Kidney Disease",
+    "image": "kidney"
+  },
+  {
+    "id": 4,
+    "name": "Cell Issues",
+    "image": "cells"
+  },
+  {
+    "id": 5,
+    "name": "Prostate Problems",
+    "image": "prostat"
+  },
+  {
+    "id": 6,
+    "name": "Lung Disease",
+    "image": "lungs"
+  }
 ]

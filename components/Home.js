@@ -5,7 +5,8 @@ import { FontAwesome } from '@expo/vector-icons';
 import articlesData from '../assets/articles.json';
 import tipsData from '../assets/tips.json';
 import BottomMenu from '../components/BottomMenu';
-import recordsData from '../assets/records.json'; // Import records data
+import recordsData from '../assets/records.json'; 
+import Charts from '../components/Charts';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -31,6 +32,14 @@ const tipImages = {
 };
 
 
+const recordsImages = {
+  heart: require('../assets/heart.jpg'),
+  cancer: require('../assets/cancer.jpg'),
+  kidney: require('../assets/kidney2.png'),
+  cells: require('../assets/cells2.png'),
+  kidneytumors: require('../assets/kidneytumors2.png'),
+  lungs: require('../assets/lungs2.png'),
+};
 
 
 const Home = ({ navigation }) => {
@@ -90,27 +99,7 @@ const Home = ({ navigation }) => {
     return formattedStats;
   };
 
-  const renderStats = () => {
-    return (
-      <View style={styles.statsContainer}>
-        <View style={styles.articlesTitleContainer}>
-          <Text style={styles.articlesTitle}>Health Stats</Text>
-          {/* Replace the navigation action with your actual implementation */}
-          <TouchableOpacity onPress={() => navigation.navigate('Stats')}>
-            <Text style={styles.viewAllText}>view all</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.statsContent}>
-          {statsData.map((stat, index) => (
-            <View key={index} style={styles.statCard}>
-              <Text style={styles.statLabel}>{stat.label}</Text>
-              <Text style={styles.statValue}>{stat.value}</Text>
-            </View>
-          ))}
-        </View>
-      </View>
-    );
-  };
+  
   
 
   const renderContent = () => {
@@ -176,31 +165,41 @@ const Home = ({ navigation }) => {
           </View>
         );
         case 'stats':
-          return renderStats();
+          return (
+            <View style={styles.statsContainer}>
+            <View style={styles.articlesTitleContainer}>
+              <Text style={styles.articlesTitle}>Latest Stats</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Stats')}>
+                <Text style={styles.viewAllText}>view all</Text>
+              </TouchableOpacity>
+            </View>
+            <Charts />
+          </View>
+          );
           case 'records':
             return (
               <View style={styles.recordsContainer}>
                 <View style={styles.articlesTitleContainer}>
-                  <Text style={styles.articlesTitle}>Records</Text>
+                  <Text style={styles.articlesTitle}>World Records</Text>
                   <TouchableOpacity onPress={() => navigation.navigate('Records')}>
                     <Text style={styles.viewAllText}>view all</Text>
                   </TouchableOpacity>
                 </View>
-                <ScrollView>
+                <View style={styles.recordsContent}>
                   {recordsData.map((record, index) => (
                     <TouchableOpacity
                       key={index}
                       style={styles.recordCard}
-                      onPress={() => navigation.navigate('RecordDetail', { recordId: index })}
+                      onPress={() => navigation.navigate('Records', { recordId: index })}
                     >
-                      <Image source={recordImages[record.image]} style={styles.recordImage} />
-                      <View style={styles.recordContent}>
-                        <Text style={styles.recordTitle}>{record.title}</Text>
-                        <Text style={styles.recordDescription}>{record.description}</Text>
+                      <Image source={recordsImages[record.image]} style={styles.recordImage} />
+                      <View style={styles.recordOverlay}>
+                        <FontAwesome name="medkit" size={14} color="white" style={styles.recordIcon} />
+                        <Text style={styles.recordTitle}>{record.subject}</Text>
                       </View>
                     </TouchableOpacity>
                   ))}
-                </ScrollView>
+                </View>
               </View>
             );
       default:
@@ -526,73 +525,51 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   statsContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 80,
+    marginBottom: 70,
   },
-  statCard: {
-    display:'flex',
-    flexDirection:'column',
-    justifyContent:'center',
-    alignItems:'center',
+  recordsContainer: {
+    marginBottom: 70,
+  },
+  recordsContent: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  recordCard: {
+    width: '48%',
     backgroundColor: 'white',
     borderRadius: 10,
-    width: '47%',
-    height: 130,
-    marginBottom: 25,
-    shadowColor: '#5C68A6',
-    shadowOffset: { width: 0, height: 4 },
-    shadowColor: '#5C68A6',
-    shadowOffset: { width: 0, height: 4 },
+    marginBottom: 10,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 4,
-
+    shadowRadius: 8,
+    elevation: 5,
   },
-  statLabel: {
+  recordImage: {
+    width: '100%',
+    height: 150,
+  },
+  recordOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    paddingVertical: 6, // Reduce vertical padding
+    paddingHorizontal: 10,
+    flexDirection: 'row', // Align text and icon side by side
+    alignItems: 'center', // Center content vertically
+  },
+  recordIcon: {
+    marginRight: 5, // Space between icon and text
+  },
+  recordTitle: {
     fontSize: 14,
-    color: '#1E3C42',
-    fontWeight: 'bold',
-    textAlign:'center',
+    color: 'white',
   },
-  statValue: {
-    fontSize: 16,
-    color: '#4E869D',
-    marginTop: 5,
-  },
-  statsContent: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'space-between',
-      paddingHorizontal: 10,
-      marginTop: 10,
-    },
-    recordsContainer: {
-      flex: 1,
-      backgroundColor: 'white',
-      paddingHorizontal: 20,
-      paddingTop: 20,
-    },
-
-    recordImage: {
-      width: 50, // Adjust size as needed
-      height: 50, // Adjust size as needed
-      borderRadius: 25, // To make it round
-      margin: 10,
-    },
-    recordContent: {
-      flex: 1,
-      padding: 10,
-    },
-    recordTitle: {
-      fontSize: 14,
-      color: '#1E3C42',
-      fontWeight: 'bold',
-    },
-    recordDescription: {
-      fontSize: 12,
-      color: '#7582A2',
-    },
+ 
 });
 
 export default Home;

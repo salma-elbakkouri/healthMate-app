@@ -1,15 +1,116 @@
 [
-    {
-      "year": 2020,
-      "description": "40% of people in India died due to health-related issues."
-    },
-    {
-      "year": 2021,
-      "description": "Increased awareness led to a decrease in smoking-related deaths."
-    },
-    {
-      "year": 2022,
-      "description": "Introduction of new health policies reduced obesity rates."
-    }
-  ]
-  
+  {
+    "subject": "Heart",
+    "image": "heart",
+    "description": "Heart diseases are one of the most common and dangerous illnesses, affecting millions worldwide.",
+    "details": [
+      {
+        "year": 2020,
+        "description": "40% of people in India died due to health-related issues."
+      },
+      {
+        "year": 2021,
+        "description": "Increased awareness led to a decrease in smoking-related deaths."
+      },
+      {
+        "year": 2022,
+        "description": "Introduction of new health policies reduced obesity rates."
+      }
+    ]
+  },
+  {
+    "subject": "Cancer",
+    "image": "cancer",
+    "description": "Cancer encompasses a large group of diseases characterized by the uncontrolled growth of abnormal cells.",
+    "details": [
+      {
+        "year": 2020,
+        "description": "Cancer rates remained steady."
+      },
+      {
+        "year": 2021,
+        "description": "New treatments improved survival rates."
+      },
+      {
+        "year": 2022,
+        "description": "Awareness campaigns reduced new cases."
+      }
+    ]
+  },
+  {
+    "subject": "Kidney",
+    "image": "kidney",
+    "description": "Kidney diseases affect the ability of the kidneys to function properly, leading to various health issues.",
+    "details": [
+      {
+        "year": 2020,
+        "description": "Kidney-related health issues rose due to poor diets."
+      },
+      {
+        "year": 2021,
+        "description": "Better screening reduced late-stage diagnoses."
+      },
+      {
+        "year": 2022,
+        "description": "More donations helped increase successful transplants."
+      }
+    ]
+  },
+  {
+    "subject": "Cells",
+    "image": "cells",
+    "description": "Cell biology studies the structure, function, and behavior of cells, the basic units of life.",
+    "details": [
+      {
+        "year": 2020,
+        "description": "Cell research saw significant breakthroughs."
+      },
+      {
+        "year": 2021,
+        "description": "Stem cell therapy became more accessible."
+      },
+      {
+        "year": 2022,
+        "description": "Regenerative medicine made significant progress."
+      }
+    ]
+  },
+  {
+    "subject": "Kidney Tumors",
+    "image": "kidneytumors",
+    "description": "Kidney tumors are abnormal growths in the kidneys, which can be benign or cancerous.",
+    "details": [
+      {
+        "year": 2020,
+        "description": "Incidence of kidney tumors increased due to improved detection methods."
+      },
+      {
+        "year": 2021,
+        "description": "Advances in treatments led to better outcomes for patients."
+      },
+      {
+        "year": 2022,
+        "description": "Research focused on early detection and new therapeutic approaches."
+      }
+    ]
+  },
+  {
+    "subject": "Lungs",
+    "image": "lungs",
+    "description": "Lung diseases range from chronic conditions like COPD to acute infections such as pneumonia.",
+    "details": [
+      {
+        "year": 2020,
+        "description": "Lung disease rates rose due to pollution."
+      },
+      {
+        "year": 2021,
+        "description": "Anti-smoking campaigns reduced new cases."
+      },
+      {
+        "year": 2022,
+        "description": "Air quality improvements reduced lung diseases."
+      }
+    ]
+  }
+]
