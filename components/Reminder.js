@@ -1,13 +1,21 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons'; // Import FontAwesome5
-import BottomMenu from './BottomMenu'; // Import BottomMenu component
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import BottomMenu from './BottomMenu';
 
 const Reminder = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.text}>Hello, this is the Reminder page</Text>
+      <View style={styles.centeredContainer}>
+        <Text style={styles.text}>Oops no medication reminders found!!</Text>
+        <Image source={require('../assets/notfound.png')} style={styles.notfound} />
+      </View>
+      <View style={styles.bottomContainer}>
+        <TouchableOpacity
+          style={styles.newReminderButton}
+          onPress={() => navigation.navigate('NewMedicineReminder')}
+        >
+          <Text style={styles.newReminderText}>+</Text>
+        </TouchableOpacity>
       </View>
       <BottomMenu activeScreen="Reminder" />
     </View>
@@ -18,16 +26,42 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F7F7F7',
+    justifyContent: 'center',
   },
-  content: {
-    flex: 1,
+  centeredContainer: {
+    marginTop:20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex:0.8,
+  },
+  text: {
+    fontSize: 17,
+    fontWeight: 'medium',
+    color: '#31477A',
+    marginBottom: 20,
+  },
+  notfound: {
+    height: 190,
+    width: 280,
+  },
+  bottomContainer: {
+    paddingHorizontal: 40,
+    paddingBottom: 20,
+    alignItems: 'center',
+  },
+  newReminderButton: {
+    backgroundColor: '#4D869C',
+    width: 60,
+    height: 60,
+    borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  text: {
-    fontSize: 18,
-    color: '#333',
-  },
+  newReminderText: {
+    color: 'white',
+    fontSize: 30,
+    letterSpacing: 1,
+  }
 });
 
 export default Reminder;
