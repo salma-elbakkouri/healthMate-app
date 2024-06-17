@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome } from '@expo/vector-icons';
@@ -7,7 +8,6 @@ import tipsData from '../assets/tips.json';
 import BottomMenu from '../components/BottomMenu';
 import recordsData from '../assets/records.json'; 
 import Charts from '../components/Charts';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const recordImages = {
@@ -47,6 +47,7 @@ const Home = ({ navigation }) => {
   const [statsData, setStatsData] = useState([]);
   const scrollY = useRef(new Animated.Value(0)).current;
   const [fullName, setFullName] = useState('');
+  const [profileImage, setProfileImage] = useState(require('../assets/avatarboy.jpg'));
 
 
 
@@ -67,12 +68,21 @@ const Home = ({ navigation }) => {
     setStatsData(fetchedStatsData);
   }, []);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUserData();
+    }, [])
+  );
+
   const fetchUserData = async () => {
     try {
       const userFullName = await AsyncStorage.getItem('userFullName');
+      const userImageIndex = await AsyncStorage.getItem('userImageIndex');
       console.log('User Full Name:', userFullName); // Log retrieved value for debugging
-      if (userFullName) {
+      if (userFullName && userImageIndex !== null) {
         setFullName(userFullName);
+        updateProfileImage(userImageIndex);
+        console.log('ImageIndex:', userImageIndex);
       } else {
         console.log('User full name not found.');
       }
@@ -83,21 +93,18 @@ const Home = ({ navigation }) => {
 
 
 
-
-
-
-  const parseFitnessData = (data) => {
-    // Implement your logic to parse and format the data from Fitness API
-    // Example:
-    const formattedStats = [
-      { label: 'Calories Burned', value: '2000 kcal' },
-      { label: 'Steps Taken', value: '15000 steps' },
-      { label: 'Water Consumed', value: '2.5 liters' },
-      { label: 'Hours Slept', value: '8 hours' },
-      { label: 'Workouts Completed', value: '5 workouts' },
-    ];
-    return formattedStats;
+  const updateProfileImage = (index) => {
+    // Check index and set the appropriate image
+    if (index === '1') {
+      setProfileImage(require('../assets/avatargirl.png'));
+    } else {
+      setProfileImage(require('../assets/avatarboy.jpg'));
+    }
   };
+
+
+
+
 
   
   
@@ -219,7 +226,7 @@ const Home = ({ navigation }) => {
           <View style={styles.rightContent}>
             <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
               <Image
-                source={require('../assets/avatar3d.jpg')}
+                source={profileImage}
                 style={styles.profileImage}
               />
             </TouchableOpacity>

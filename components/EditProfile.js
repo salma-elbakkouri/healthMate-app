@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import { FontAwesome5, Entypo } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { firestore, auth } from '../config/firebaseConfig';
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
+import { firestore, auth } from '../config/firebaseConfig';
 
 const EditProfile = ({ navigation }) => {
   const [fullName, setFullName] = useState('');
@@ -14,7 +13,9 @@ const EditProfile = ({ navigation }) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [loading, setLoading] = useState(true);
-  const [image, setImage] = useState(require('../assets/avatar3d.jpg'));
+  const [images, setImages] = useState([require('../assets/avatarboy.jpg'), require('../assets/avatargirl.png')]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0); // Initialize with default image index
+  const [imageIndex, setImageIndex] = useState(0); // This will hold the fetched image index
 
   useEffect(() => {
     fetchUserData();
@@ -24,23 +25,30 @@ const EditProfile = ({ navigation }) => {
     try {
       const userFullName = await AsyncStorage.getItem('userFullName');
       const userEmail = await AsyncStorage.getItem('userEmail');
-      if (userFullName && userEmail) {
+      const userImageIndex = await AsyncStorage.getItem('userImageIndex');
+      console.log('UserFullName from AsyncStorage:', userFullName);
+      console.log('UserEmail from AsyncStorage:', userEmail);
+      console.log('UserImageIndex from AsyncStorage:', userImageIndex);
+
+      if (userFullName && userEmail && userImageIndex !== null) {
         setFullName(userFullName);
         setEmail(userEmail);
+        const parsedImageIndex = parseInt(userImageIndex, 10);
+        setImageIndex(parsedImageIndex);
+        setCurrentImageIndex(parsedImageIndex);
       } else {
         console.log('User data not found in AsyncStorage, fetching from Firestore...');
         console.log('Auth user:', auth.currentUser);
 
-        const userDoc = await firestore.collection('users').doc(auth.currentUser.uid).get();
-        if (userDoc.exists) {
+        const userDoc = await getDoc(doc(firestore, 'users', auth.currentUser.uid));
+        if (userDoc.exists()) {
           const userData = userDoc.data();
+          console.log('User Data from Firestore:', userData);
           setFullName(userData.fullName);
           setEmail(userData.email);
-          if (userData.profileImage) {
-            setImage({ uri: userData.profileImage });
-          } else {
-            setImage(require('../assets/avatar3d.jpg'));
-          }
+          const fetchedImageIndex = userData.imageIndex || 0; // Use fetched index or default to 0
+          setImageIndex(fetchedImageIndex);
+          setCurrentImageIndex(fetchedImageIndex); // Set the image index based on the fetched data
         } else {
           console.log('No such document!');
         }
@@ -62,9 +70,11 @@ const EditProfile = ({ navigation }) => {
 
         await updateDoc(doc(firestore, 'users', currentUser.uid), {
           fullName: fullName,
+          imageIndex: imageIndex, // Update imageIndex in Firestore
         });
 
         await AsyncStorage.setItem('userFullName', fullName);
+        await AsyncStorage.setItem('userImageIndex', imageIndex.toString()); // Update image index in AsyncStorage
 
         Alert.alert('Profile Updated', 'Your profile has been updated successfully.');
         navigation.navigate('Profile');
@@ -96,9 +106,11 @@ const EditProfile = ({ navigation }) => {
 
         await updateDoc(doc(firestore, 'users', currentUser.uid), {
           fullName: fullName,
+          imageIndex: imageIndex, // Update imageIndex in Firestore
         });
 
         await AsyncStorage.setItem('userFullName', fullName);
+        await AsyncStorage.setItem('userImageIndex', imageIndex.toString()); // Update image index in AsyncStorage
 
         Alert.alert('Profile Updated', 'Your profile has been updated successfully.');
         setNewPassword('');
@@ -112,17 +124,10 @@ const EditProfile = ({ navigation }) => {
     }
   };
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      setImage({ uri: result.uri });
-    }
+  const toggleImage = () => {
+    const newImageIndex = currentImageIndex === 0 ? 1 : 0;
+    setCurrentImageIndex(newImageIndex);
+    setImageIndex(newImageIndex); // Update imageIndex based on the toggle
   };
 
   if (loading) {
@@ -139,12 +144,17 @@ const EditProfile = ({ navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
-      <View style={styles.profileHeader}>
-        <View style={styles.profileImageContainer}>
-          <Image source={require('../assets/avatar3d.jpg')} style={styles.profileImage} />
-          
+        <View style={styles.profileHeader}>
+          <View style={styles.profileImageContainer}>
+            <Image source={images[currentImageIndex]} style={styles.profileImage} />
+          </View>
+          <TouchableOpacity style={styles.chevronLeft} onPress={toggleImage}>
+            <Entypo name="chevron-left" size={24} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.chevronRight} onPress={toggleImage}>
+            <Entypo name="chevron-right" size={24} color="#fff" />
+          </TouchableOpacity>
         </View>
-      </View>
 
         <View style={styles.contentContainer}>
           <View style={styles.formGroup}>
@@ -257,13 +267,18 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
   },
-  cameraOverlay: {
+  chevronLeft: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 8,
+    top: '100%',
+    left: 10,
+    transform: [{ translateY: -12 }],
+    zIndex: 1,
+  },
+  chevronRight: {
+    position: 'absolute',
+    top: '100%',
+    right: 10,
+    transform: [{ translateY: -12 }],
     zIndex: 1,
   },
   profileInfo: {
@@ -281,48 +296,49 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginTop: 2,
-    marginBottom:2,
+    marginBottom: 2,
   },
   joinDate: {
     color: '#9FA3B5',
-    fontSize: 10  },
-    contentContainer: {
-      marginTop:30,
-      paddingHorizontal: 20,
-    },
-    formGroup: {
-      marginBottom: 20,
-    },
-    infoLabel: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 5,
-    },
-    label: {
-      color: '#9FA3B5',
-      fontSize: 12,
-      marginLeft: 10,
-    },
-    input: {
-      borderWidth: 1,
-      borderColor: '#ccc',
-      borderRadius: 5,
-      paddingHorizontal: 15,
-      fontSize: 14,
-      height: 45,
-      backgroundColor: '#FFFFFF',
-    },
-    updateButton: {
-      backgroundColor: '#1E3C42',
-      paddingVertical: 15,
-      borderRadius: 5,
-      alignItems: 'center',
-    },
-    updateButtonText: {
-      color: '#FFFFFF',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-  });
-  
-  export default EditProfile;
+    fontSize: 10,
+  },
+  contentContainer: {
+    marginTop: 30,
+    paddingHorizontal: 20,
+  },
+  formGroup: {
+    marginBottom: 20,
+  },
+  infoLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  label: {
+    color: '#9FA3B5',
+    fontSize: 12,
+    marginLeft: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 15,
+    fontSize: 14,
+    height: 45,
+    backgroundColor: '#FFFFFF',
+  },
+  updateButton: {
+    backgroundColor: '#1E3C42',
+    paddingVertical: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  updateButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
+
+export default EditProfile;

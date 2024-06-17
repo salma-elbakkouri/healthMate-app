@@ -21,7 +21,7 @@ const Records = ({navigation}) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <FontAwesome name="chevron-left" size={16} color="#1E3C42" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>All Articles</Text>
+        <Text style={styles.headerTitle}>All Records</Text>
       </View>
       <ScrollView style={styles.contentScroll}>
         <View style={styles.recordsContainer}>

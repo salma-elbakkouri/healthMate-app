@@ -36,7 +36,7 @@ const Stats = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <FontAwesome name="chevron-left" size={16} color="#1E3C42" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Health Statistics</Text>
+        <Text style={styles.headerTitle}>All Statistics</Text>
       </View>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.chartContainer}>

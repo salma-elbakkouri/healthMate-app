@@ -39,21 +39,23 @@ export const forgotPassword = async (email) => {
 };
 
 
-export const registerUser = async (fullName, email, password) => {
+export const registerUser = async (fullName, email, password, imageIndex = 0) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-    // Add user to Firestore with full name
+    // Add user to Firestore with full name and image index
     await setDoc(doc(firestore, 'users', userCredential.user.uid), {
       fullName: fullName,
       email: email,
+      imageIndex: imageIndex, // Use 'imageIndex' without spaces and as a number
     });
 
-    // Save full name and email in AsyncStorage
+    // Save full name, email, and image index in AsyncStorage
     await AsyncStorage.setItem('userFullName', fullName);
     await AsyncStorage.setItem('userEmail', email);
-    
-    console.log('User full name and email saved in AsyncStorage');
+    await AsyncStorage.setItem('userImageIndex', imageIndex.toString()); // Store as string in AsyncStorage
+
+    console.log('User full name, email, and image index saved in AsyncStorage');
 
     return userCredential.user;
   } catch (error) {
