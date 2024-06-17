@@ -219,7 +219,7 @@ const Home = ({ navigation }) => {
           <View style={styles.rightContent}>
             <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
               <Image
-                source={require('../assets/doctor.png')}
+                source={require('../assets/avatar3d.jpg')}
                 style={styles.profileImage}
               />
             </TouchableOpacity>
@@ -320,6 +320,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    borderWidth:0.4,
+    borderColor:'#E8E9EA',
   },
   gradientBackground: {
     height: 150,
