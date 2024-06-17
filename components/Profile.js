@@ -189,18 +189,20 @@ const styles = StyleSheet.create({
   },
   profileInfo: {
     alignItems: 'center',
-    marginTop: 65, 
+    marginTop: 60,
+    marginBottom:20, 
   },
   username: {
     color: '#9FA3B5',
-    fontSize: 12,
+    fontSize: 11,
     marginTop: 10,
   },
   fullName: {
     color: '#1E3C42',
     fontSize: 14,
     fontWeight: 'bold',
-    marginBottom: 2,
+    marginTop:4,
+    marginBottom: 4,
   },
   joinDate: {
     color: '#9FA3B5',

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { FontAwesome, Entypo } from '@expo/vector-icons';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
+import { FontAwesome5, Entypo } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { firestore, auth } from '../config/firebaseConfig';
@@ -14,7 +14,7 @@ const EditProfile = ({ navigation }) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [loading, setLoading] = useState(true);
-  const [image, setImage] = useState(require('../assets/doctor.png'));
+  const [image, setImage] = useState(require('../assets/avatar3d.jpg'));
 
   useEffect(() => {
     fetchUserData();
@@ -30,18 +30,16 @@ const EditProfile = ({ navigation }) => {
       } else {
         console.log('User data not found in AsyncStorage, fetching from Firestore...');
         console.log('Auth user:', auth.currentUser);
-  
+
         const userDoc = await firestore.collection('users').doc(auth.currentUser.uid).get();
         if (userDoc.exists) {
           const userData = userDoc.data();
           setFullName(userData.fullName);
           setEmail(userData.email);
-          // Check if profileImage exists and set the image state accordingly
           if (userData.profileImage) {
             setImage({ uri: userData.profileImage });
           } else {
-            // Set a default image if profileImage is null
-            setImage(require('../assets/doctor.png')); // Replace with your default image path
+            setImage(require('../assets/avatar3d.jpg'));
           }
         } else {
           console.log('No such document!');
@@ -56,7 +54,6 @@ const EditProfile = ({ navigation }) => {
 
   const handleUpdate = async () => {
     if (!currentPassword && !newPassword && !confirmNewPassword) {
-      // If password fields are empty, update only the full name
       try {
         const currentUser = auth.currentUser;
         if (!currentUser) {
@@ -71,13 +68,11 @@ const EditProfile = ({ navigation }) => {
 
         Alert.alert('Profile Updated', 'Your profile has been updated successfully.');
         navigation.navigate('Profile');
-
       } catch (error) {
         console.error('Error updating profile:', error);
         Alert.alert('Update Error', 'Failed to update profile. Please try again later.');
       }
     } else {
-      // If current password is filled, validate and update the password
       if (!currentPassword || !newPassword || !confirmNewPassword) {
         Alert.alert('Incomplete Password Fields', 'Please fill in all password fields.');
         return;
@@ -110,7 +105,6 @@ const EditProfile = ({ navigation }) => {
         setCurrentPassword('');
         setConfirmNewPassword('');
         navigation.navigate('Profile');
-
       } catch (error) {
         console.error('Error updating password:', error);
         Alert.alert('Password Update Error', 'Failed to update password. Please check your current password and try again.');
@@ -126,7 +120,7 @@ const EditProfile = ({ navigation }) => {
       quality: 1,
     });
 
-    if (!result.canceled) {
+    if (!result.cancelled) {
       setImage({ uri: result.uri });
     }
   };
@@ -140,153 +134,195 @@ const EditProfile = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.whiteHeader}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FontAwesome name="chevron-left" size={16} color="#1E3C42" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Edit Profile</Text>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+      <View style={styles.profileHeader}>
+        <View style={styles.profileImageContainer}>
+          <Image source={require('../assets/avatar3d.jpg')} style={styles.profileImage} />
+          
+        </View>
       </View>
 
-      <View style={styles.doctorImageContainer}>
-        <TouchableOpacity onPress={pickImage}>
-          <Image source={image} style={styles.doctorImage} />
-          <View style={styles.cameraIconContainer}>
-            <Entypo name="camera" size={24} color="#4E869D" />
+        <View style={styles.contentContainer}>
+          <View style={styles.formGroup}>
+            <View style={styles.infoLabel}>
+              <FontAwesome5 name="user" size={12} color="#9FA3B5" />
+              <Text style={styles.label}>Full Name</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your full name"
+              value={fullName}
+              onChangeText={setFullName}
+            />
           </View>
-        </TouchableOpacity>
-      </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>User infos</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your full name"
-          placeholderTextColor="#B9C6D3"
-          value={fullName}
-          onChangeText={setFullName}
-        />
-      </View>
+          <View style={styles.formGroup}>
+            <View style={styles.infoLabel}>
+              <FontAwesome5 name="envelope" size={12} color="#9FA3B5" />
+              <Text style={styles.label}>Email</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Your email address"
+              value={email}
+              editable={false}
+            />
+          </View>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your email address"
-          placeholderTextColor="#B9C6D3"
-          value={email}
-          editable={false}
-        />
-      </View>
+          <View style={styles.formGroup}>
+            <View style={styles.infoLabel}>
+              <FontAwesome5 name="lock" size={12} color="#9FA3B5" />
+              <Text style={styles.label}>Current Password</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder=""
+              secureTextEntry
+              value={currentPassword}
+              onChangeText={setCurrentPassword}
+            />
+          </View>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your current password"
-          placeholderTextColor="#B9C6D3"
-          secureTextEntry={true}
-          value={currentPassword}
-          onChangeText={setCurrentPassword}
-        />
-      </View>
+          <View style={styles.formGroup}>
+            <View style={styles.infoLabel}>
+              <FontAwesome5 name="lock" size={12} color="#9FA3B5" />
+              <Text style={styles.label}>New Password</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder=""
+              secureTextEntry
+              value={newPassword}
+              onChangeText={setNewPassword}
+            />
+          </View>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your new password"
-          placeholderTextColor="#B9C6D3"
-          secureTextEntry={true}
-          value={newPassword}
-          onChangeText={setNewPassword}
-        />
-      </View>
+          <View style={styles.formGroup}>
+            <View style={styles.infoLabel}>
+              <FontAwesome5 name="lock" size={12} color="#9FA3B5" />
+              <Text style={styles.label}>Confirm New Password</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder=""
+              secureTextEntry
+              value={confirmNewPassword}
+              onChangeText={setConfirmNewPassword}
+            />
+          </View>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm your new password"
-          placeholderTextColor="#B9C6D3"
-          secureTextEntry={true}
-          value={confirmNewPassword}
-          onChangeText={setConfirmNewPassword}
-        />
-      </View>
-
-      <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
-        <Text style={styles.updateButtonText}>Update Profile</Text>
-      </TouchableOpacity>
-    </View>
+          <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
+            <Text style={styles.updateButtonText}>Update Profile</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
+    backgroundColor: '#FFFFFF',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'flex-start',
+  },
+  profileHeader: {
+    backgroundColor: '#1E3C42',
     alignItems: 'center',
-  },
-  whiteHeader: {
-    height: 110,
-    width: '100%',
-    backgroundColor: 'white',
-    paddingTop: 20,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1E3C42',
-    marginLeft: 20,
-  },
-  doctorImageContainer: {
-    marginTop: 20,
+    paddingTop: 70,
+    paddingBottom: 30,
+    marginBottom: 10,
     position: 'relative',
   },
-  doctorImage: {
+  profileImageContainer: {
     width: 120,
-    height: 115,
-    borderRadius: 70,
-  },
-  cameraIconContainer: {
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        backgroundColor: 'white',
-        borderRadius: 50,
-        padding: 8,
-      },
-  inputContainer: {
-    width: '80%',
-    marginTop: 20,
-  },
-  label: {
-    color: '#1E3C42',
-    marginBottom: 10,
-    fontSize: 14,
-  },
-  input: {
+    height: 120,
+    borderRadius: 60,
+    overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#B9C6D3',
-    paddingVertical: 9,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    fontSize: 14,
-  },
-  updateButton: {
-    backgroundColor: '#4E869D',
-    marginTop: 20,
-    width: '80%',
-    paddingVertical: 13,
-    borderRadius: 5,
+    borderColor: '#E8E9EA',
+    justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative',
   },
-  updateButtonText: {
-    color: 'white',
-    fontSize: 14,
+  profileImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  cameraOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 8,
+    zIndex: 1,
+  },
+  profileInfo: {
+    alignItems: 'center',
+    marginTop: 5,
+    marginBottom: 17,
+  },
+  username: {
+    color: '#9FA3B5',
+    fontSize: 12,
+    marginTop: 5,
+  },
+  fullName: {
+    color: '#1E3C42',
+    fontSize: 16,
     fontWeight: 'bold',
+    marginTop: 2,
+    marginBottom:2,
   },
-});
-
-export default EditProfile;
+  joinDate: {
+    color: '#9FA3B5',
+    fontSize: 10  },
+    contentContainer: {
+      marginTop:30,
+      paddingHorizontal: 20,
+    },
+    formGroup: {
+      marginBottom: 20,
+    },
+    infoLabel: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 5,
+    },
+    label: {
+      color: '#9FA3B5',
+      fontSize: 12,
+      marginLeft: 10,
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: '#ccc',
+      borderRadius: 5,
+      paddingHorizontal: 15,
+      fontSize: 14,
+      height: 45,
+      backgroundColor: '#FFFFFF',
+    },
+    updateButton: {
+      backgroundColor: '#1E3C42',
+      paddingVertical: 15,
+      borderRadius: 5,
+      alignItems: 'center',
+    },
+    updateButtonText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+  });
+  
+  export default EditProfile;
