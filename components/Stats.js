@@ -1,16 +1,33 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import { Bar, Line, Pie, Doughnut } from 'react-chartjs-2';
-import BottomMenu from '../components/BottomMenu';
-import statsData from '../assets/stats.json';
+import { FontAwesome } from '@expo/vector-icons'; // For icons
+import { PieChart, BarChart, LineChart } from 'react-native-chart-kit';
 
 const Stats = ({ navigation }) => {
-  const chartComponents = {
-    bar: Bar,
-    line: Line,
-    pie: Pie,
-    doughnut: Doughnut,
+  // Dummy data for charts
+  const pieChartData = [
+    { name: 'Cancer', population: 2, color: '#FFC0CB', legendFontColor: 'black', legendFontSize: 15 },
+    { name: 'Heart', population: 5, color: '#ADD8E6', legendFontColor: '#000', legendFontSize: 15 },
+    { name: 'Diabetes', population: 3, color: '#87CEFA', legendFontColor: '#000', legendFontSize: 15 },
+    { name: 'Obesity', population: 7, color: '#FFD700', legendFontColor: '#000', legendFontSize: 15 },
+  ];
+
+  const barChartData = {
+    labels: ['Cancer', 'Heart', 'Diabetes', 'Obesity'],
+    datasets: [
+      {
+        data: [2, 5, 3, 7],
+      },
+    ],
+  };
+
+  const lineChartData = {
+    labels: ['Cancer', 'Heart', 'Diabetes', 'Obesity'],
+    datasets: [
+      {
+        data: [2, 5, 3, 7],
+      },
+    ],
   };
 
   return (
@@ -19,21 +36,63 @@ const Stats = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <FontAwesome name="chevron-left" size={16} color="#1E3C42" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>All Stats</Text>
+        <Text style={styles.headerTitle}>Health Statistics</Text>
       </View>
-      <ScrollView style={styles.contentScroll}>
-        <View style={styles.statsContainer}>
-          {statsData.map((stat, index) => {
-            const ChartComponent = chartComponents[stat.type];
-            return (
-              <View key={index} style={styles.statCard}>
-                <ChartComponent data={stat.data} options={stat.options} />
-              </View>
-            );
-          })}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.chartContainer}>
+          {/* Pie Chart */}
+          <View style={styles.chartCard}>
+            <Text style={styles.chartTitle}>Health Conditions</Text>
+            <PieChart
+              data={pieChartData}
+              width={280}
+              height={190}
+              chartConfig={{
+                backgroundGradientFrom: '#1E3C42',
+                backgroundGradientTo: '#1E3C42',
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              }}
+              accessor="population"
+              backgroundColor="transparent"
+              paddingLeft="15"
+            />
+          </View>
+
+          {/* Bar Chart */}
+          <View style={styles.chartCard}>
+            <Text style={styles.chartTitle}>Health Risks</Text>
+            <BarChart
+              data={barChartData}
+              width={280}
+              height={190}
+              yAxisLabel=""
+              chartConfig={{
+                backgroundGradientFrom: '#1E3C42',
+                backgroundGradientTo: '#1E3C42',
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              }}
+              style={styles.chart}
+            />
+          </View>
+
+          {/* Line Chart */}
+          <View style={styles.chartCard}>
+            <Text style={styles.chartTitle}>Health Trends</Text>
+            <LineChart
+              data={lineChartData}
+              width={280}
+              height={190}
+              chartConfig={{
+                backgroundGradientFrom: '#1E3C42',
+                backgroundGradientTo: '#1E3C42',
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              }}
+              style={styles.chart}
+              bezier
+            />
+          </View>
         </View>
       </ScrollView>
-      <BottomMenu />
     </View>
   );
 };
@@ -52,7 +111,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
   },
   headerTitle: {
     fontSize: 18,
@@ -60,25 +118,26 @@ const styles = StyleSheet.create({
     color: '#1E3C42',
     marginLeft: 20,
   },
-  contentScroll: {
-    width: '90%',
-    marginTop: 10,
-  },
-  statsContainer: {
-    marginBottom: 80,
+  scrollContent: {
     alignItems: 'center',
   },
-  statCard: {
+  chartContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  chartCard: {
     backgroundColor: 'white',
-    borderRadius: 10,
-    width: '100%',
-    marginBottom: 25,
-    padding: 15,
-    shadowColor: '#5C68A6',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 4,
+    borderRadius: 20,
+    marginBottom: 20, 
+    padding: 20,
+    borderWidth:0.4,
+    borderColor:'lightgrey',
+  },
+  chartTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#1E3C42',
   },
 });
 

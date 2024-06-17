@@ -42,6 +42,13 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     fetchUserData();
+    const fetchedStatsData = [
+      { label: 'Cancer due to smoking', value: '2 people' },
+      { label: 'Heart diseases', value: '5 people' },
+      { label: 'Diabetes', value: '3 people' },
+      { label: 'Obesity', value: '7 people' },
+    ];
+    setStatsData(fetchedStatsData);
   }, []);
 
   const fetchUserData = async () => {
@@ -80,20 +87,24 @@ const Home = ({ navigation }) => {
     return (
       <View style={styles.statsContainer}>
         <View style={styles.articlesTitleContainer}>
-          <Text style={styles.articlesTitle}>Today's Stats</Text>
+          <Text style={styles.articlesTitle}>Health Stats</Text>
+          {/* Replace the navigation action with your actual implementation */}
           <TouchableOpacity onPress={() => navigation.navigate('Stats')}>
             <Text style={styles.viewAllText}>view all</Text>
           </TouchableOpacity>
         </View>
-        {statsData.map((stat, index) => (
-          <View key={index} style={styles.statCard}>
-            <Text style={styles.statLabel}>{stat.label}</Text>
-            <Text style={styles.statValue}>{stat.value}</Text>
-          </View>
-        ))}
+        <View style={styles.statsContent}>
+          {statsData.map((stat, index) => (
+            <View key={index} style={styles.statCard}>
+              <Text style={styles.statLabel}>{stat.label}</Text>
+              <Text style={styles.statValue}>{stat.value}</Text>
+            </View>
+          ))}
+        </View>
       </View>
     );
   };
+  
 
   const renderContent = () => {
     switch (activeCategory) {
@@ -157,8 +168,8 @@ const Home = ({ navigation }) => {
             </View>
           </View>
         );
-      case 'stats':
-        return renderStats(); // Render the stats component
+        case 'stats':
+          return renderStats();
       case 'records':
         return <Text style={styles.placeholderText}>Records Content</Text>;
       default:
@@ -489,27 +500,42 @@ const styles = StyleSheet.create({
     marginBottom: 80,
   },
   statCard: {
+    display:'flex',
+    flexDirection:'column',
+    justifyContent:'center',
+    alignItems:'center',
     backgroundColor: 'white',
     borderRadius: 10,
-    width: '90%',
-    padding: 15,
-    marginBottom: 10,
+    width: '47%',
+    height: 130,
+    marginBottom: 25,
+    shadowColor: '#5C68A6',
+    shadowOffset: { width: 0, height: 4 },
     shadowColor: '#5C68A6',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 4,
+
   },
   statLabel: {
     fontSize: 14,
     color: '#1E3C42',
     fontWeight: 'bold',
+    textAlign:'center',
   },
   statValue: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#4E869D',
     marginTop: 5,
   },
+  statsContent: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+      paddingHorizontal: 10,
+      marginTop: 10,
+    }
 });
 
 export default Home;
