@@ -5,8 +5,15 @@ import { FontAwesome } from '@expo/vector-icons';
 import articlesData from '../assets/articles.json';
 import tipsData from '../assets/tips.json';
 import BottomMenu from '../components/BottomMenu';
+import recordsData from '../assets/records.json'; // Import records data
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const recordImages = {
+  india: require('../assets/steroids.png'), // Example image path, adjust as per your assets
+  usa: require('../assets/depression.png'), // Example image path, adjust as per your assets
+  // Add more images as needed based on your recordsData structure
+};
 
 const articleImages = {
   steroids: require('../assets/steroids.png'),
@@ -170,8 +177,32 @@ const Home = ({ navigation }) => {
         );
         case 'stats':
           return renderStats();
-      case 'records':
-        return <Text style={styles.placeholderText}>Records Content</Text>;
+          case 'records':
+            return (
+              <View style={styles.recordsContainer}>
+                <View style={styles.articlesTitleContainer}>
+                  <Text style={styles.articlesTitle}>Records</Text>
+                  <TouchableOpacity onPress={() => navigation.navigate('Records')}>
+                    <Text style={styles.viewAllText}>view all</Text>
+                  </TouchableOpacity>
+                </View>
+                <ScrollView>
+                  {recordsData.map((record, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={styles.recordCard}
+                      onPress={() => navigation.navigate('RecordDetail', { recordId: index })}
+                    >
+                      <Image source={recordImages[record.image]} style={styles.recordImage} />
+                      <View style={styles.recordContent}>
+                        <Text style={styles.recordTitle}>{record.title}</Text>
+                        <Text style={styles.recordDescription}>{record.description}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            );
       default:
         return null;
     }
@@ -535,7 +566,33 @@ const styles = StyleSheet.create({
       justifyContent: 'space-between',
       paddingHorizontal: 10,
       marginTop: 10,
-    }
+    },
+    recordsContainer: {
+      flex: 1,
+      backgroundColor: 'white',
+      paddingHorizontal: 20,
+      paddingTop: 20,
+    },
+
+    recordImage: {
+      width: 50, // Adjust size as needed
+      height: 50, // Adjust size as needed
+      borderRadius: 25, // To make it round
+      margin: 10,
+    },
+    recordContent: {
+      flex: 1,
+      padding: 10,
+    },
+    recordTitle: {
+      fontSize: 14,
+      color: '#1E3C42',
+      fontWeight: 'bold',
+    },
+    recordDescription: {
+      fontSize: 12,
+      color: '#7582A2',
+    },
 });
 
 export default Home;

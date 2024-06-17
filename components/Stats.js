@@ -6,10 +6,10 @@ import { PieChart, BarChart, LineChart } from 'react-native-chart-kit';
 const Stats = ({ navigation }) => {
   // Dummy data for charts
   const pieChartData = [
-    { name: 'Cancer', population: 2, color: '#FFC0CB', legendFontColor: 'black', legendFontSize: 15 },
-    { name: 'Heart', population: 5, color: '#ADD8E6', legendFontColor: '#000', legendFontSize: 15 },
-    { name: 'Diabetes', population: 3, color: '#87CEFA', legendFontColor: '#000', legendFontSize: 15 },
-    { name: 'Obesity', population: 7, color: '#FFD700', legendFontColor: '#000', legendFontSize: 15 },
+    { name: 'Cancer', population: 2, color: '#CDE8E5', legendFontColor: 'black', legendFontSize: 15 },
+    { name: 'Heart', population: 5, color: '#EEF7FF', legendFontColor: '#000', legendFontSize: 15 },
+    { name: 'Diabetes', population: 3, color: '#7AB2B2', legendFontColor: '#000', legendFontSize: 15 },
+    { name: 'Obesity', population: 7, color: '#4D869C', legendFontColor: '#000', legendFontSize: 15 },
   ];
 
   const barChartData = {
