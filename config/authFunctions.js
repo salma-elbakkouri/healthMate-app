@@ -64,3 +64,28 @@ export const registerUser = async (fullName, email, password, imageIndex = 0) =>
     return null;
   }
 };
+
+
+
+export const saveMedicineReminder = async (userId, pillName, amount, frequency, beginDate, endDate, doses, notificationEnabled) => {
+  try {
+    await setDoc(doc(firestore, 'medicines', `${userId}_${pillName}`), {
+      userId: userId,
+      pillName: pillName,
+      amount: amount,
+      frequency: frequency,
+      beginDate: beginDate.toISOString(), // Convert to ISO string
+      endDate: endDate.toISOString(), // Convert to ISO string
+      firstDose: doses.firstDose,
+      secondDose: doses.secondDose,
+      thirdDose: doses.thirdDose,
+      notificationEnabled: notificationEnabled
+    });
+
+    console.log('Medicine reminder saved successfully');
+    Alert.alert('Success', 'Medicine reminder saved successfully.');
+  } catch (error) {
+    console.error('Error saving medicine reminder:', error);
+    Alert.alert('Error', 'Failed to save medicine reminder. Please try again.');
+  }
+};

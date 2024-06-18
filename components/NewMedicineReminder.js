@@ -1,32 +1,102 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Switch, StyleSheet, ScrollView, KeyboardAvoidingView, Modal, FlatList } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Switch, StyleSheet, ScrollView, KeyboardAvoidingView, Modal, FlatList, Platform } from 'react-native';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import BottomMenu from './BottomMenu';
+import { saveMedicineReminder } from '../config/authFunctions';
+import { getAuth } from 'firebase/auth';
+
 
 const NewMedicineReminder = () => {
   const [medication, setMedication] = useState('');
   const [pillCount, setPillCount] = useState(4);
-  const [beginDate, setBeginDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [beginDate, setBeginDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [frequency, setFrequency] = useState('3 times');
   const [doses, setDoses] = useState({ firstDose: '8:00 AM', secondDose: '12:00 PM', thirdDose: '6:00 PM' });
   const [notificationEnabled, setNotificationEnabled] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState({ visible: false, field: '' });
+  const [showDatePicker, setShowDatePicker] = useState({ visible: false, field: '' });
 
   const frequencies = ['1 time', '2 times', '3 times'];
+  
+
+  const handleSave = async () => {
+    const auth = getAuth();
+    const userId = auth.currentUser.uid;
+    console.log('Save button pressed');
+
+    try {
+      await saveMedicineReminder(
+        userId,
+        medication,
+        pillCount,
+        frequency,
+        beginDate,
+        endDate,
+        doses,
+        notificationEnabled
+      );
+    } catch (error) {
+      console.error('Error saving medicine reminder:', error);
+      Alert.alert('Error', 'Failed to save medicine reminder. Please try again.');
+    }
+  };
 
   const handleFrequencySelect = (item) => {
     setFrequency(item);
     setModalVisible(false);
   };
 
-  console.log('Medication:', medication);
-  console.log('Pill Count:', pillCount);
-  console.log('Begin Date:', beginDate);
-  console.log('End Date:', endDate);
-  console.log('Frequency:', frequency);
-  console.log('Doses:', doses);
-  console.log('Notification Enabled:', notificationEnabled);
+  const handleTimeChange = (event, selectedTime) => {
+    if (selectedTime) {
+      const hours = selectedTime.getHours();
+      const minutes = selectedTime.getMinutes();
+      const period = hours >= 12 ? 'PM' : 'AM';
+      const adjustedHours = hours % 12 || 12; // Convert 0 to 12 for 12 AM
+      const formattedTime = `${adjustedHours}:${minutes.toString().padStart(2, '0')} ${period}`;
+
+      setDoses((prevDoses) => ({
+        ...prevDoses,
+        [showTimePicker.field]: formattedTime,
+      }));
+    }
+    setShowTimePicker({ visible: false, field: '' });
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    if (selectedDate) {
+      if (showDatePicker.field === 'beginDate') {
+        setBeginDate(selectedDate);
+      } else if (showDatePicker.field === 'endDate') {
+        setEndDate(selectedDate);
+      }
+    }
+    setShowDatePicker({ visible: false, field: '' });
+  };
+
+  const formatDate = (date) => {
+    const options = { day: '2-digit', month: 'short' };
+    return date.toLocaleDateString('en-US', options);
+  };
+
+  const parseTimeString = (timeString) => {
+    const [time, modifier] = timeString.split(' ');
+    let [hours, minutes] = time.split(':');
+    if (modifier === 'PM' && hours !== '12') {
+      hours = parseInt(hours, 10) + 12;
+    }
+    if (modifier === 'AM' && hours === '12') {
+      hours = 0;
+    }
+    return new Date().setHours(hours, minutes, 0);
+  };
+
+  const isDoseEnabled = (doseIndex) => {
+    const times = parseInt(frequency.split(' ')[0], 10);
+    return doseIndex < times;
+  };
 
   return (
     <KeyboardAvoidingView behavior="padding" style={styles.keyboardAvoidingView}>
@@ -80,63 +150,59 @@ const NewMedicineReminder = () => {
           <View style={styles.row}>
             <View style={[styles.formGroup, styles.halfWidth]}>
               <Text style={styles.label}>Begin</Text>
-              <View style={styles.inputContainer}>
+              <TouchableOpacity
+                style={styles.inputContainer}
+                onPress={() => setShowDatePicker({ visible: true, field: 'beginDate' })}
+              >
                 <FontAwesome name="calendar" size={16} color="#4D869C" style={styles.inputIcon} />
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="DD MMM"
-                  value={beginDate}
-                  onChangeText={(text) => setBeginDate(text)}
-                />
-              </View>
+                <Text style={[styles.textInput, styles.centeredText]}>{formatDate(beginDate)}</Text>
+              </TouchableOpacity>
             </View>
 
             <View style={[styles.formGroup, styles.halfWidth]}>
               <Text style={styles.label}>Finish</Text>
-              <View style={styles.inputContainer}>
+              <TouchableOpacity
+                style={styles.inputContainer}
+                onPress={() => setShowDatePicker({ visible: true, field: 'endDate' })}
+              >
                 <FontAwesome name="calendar" size={16} color="#4D869C" style={styles.inputIcon} />
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="DD MMM"
-                  value={endDate}
-                  onChangeText={(text) => setEndDate(text)}
-                />
-              </View>
+                <Text style={[styles.textInput, styles.centeredText]}>{formatDate(endDate)}</Text>
+              </TouchableOpacity>
             </View>
           </View>
 
           <View style={styles.row}>
             <View style={[styles.formGroup, styles.thirdWidth]}>
               <Text style={styles.label}>1st dose</Text>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  style={styles.textInput}
-                  value={doses.firstDose}
-                  onChangeText={(text) => setDoses({ ...doses, firstDose: text })}
-                />
-              </View>
+              <TouchableOpacity
+                style={[styles.inputContainer, !isDoseEnabled(0) && styles.disabledInput]}
+                onPress={() => isDoseEnabled(0) && setShowTimePicker({ visible: true, field: 'firstDose' })}
+                disabled={!isDoseEnabled(0)}
+              >
+                <Text style={[styles.textInput, styles.centeredText]}>{doses.firstDose}</Text>
+              </TouchableOpacity>
             </View>
 
             <View style={[styles.formGroup, styles.thirdWidth]}>
               <Text style={styles.label}>2nd dose</Text>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  style={styles.textInput}
-                  value={doses.secondDose}
-                  onChangeText={(text) => setDoses({ ...doses, secondDose: text })}
-                />
-              </View>
+              <TouchableOpacity
+                style={[styles.inputContainer, !isDoseEnabled(1) && styles.disabledInput]}
+                onPress={() => isDoseEnabled(1) && setShowTimePicker({ visible: true, field: 'secondDose' })}
+                disabled={!isDoseEnabled(1)}
+              >
+                <Text style={[styles.textInput, styles.centeredText]}>{doses.secondDose}</Text>
+              </TouchableOpacity>
             </View>
 
             <View style={[styles.formGroup, styles.thirdWidth]}>
               <Text style={styles.label}>3rd dose</Text>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  style={styles.textInput}
-                  value={doses.thirdDose}
-                  onChangeText={(text) => setDoses({ ...doses, thirdDose: text })}
-                />
-              </View>
+              <TouchableOpacity
+                style={[styles.inputContainer, !isDoseEnabled(2) && styles.disabledInput]}
+                onPress={() => isDoseEnabled(2) && setShowTimePicker({ visible: true, field: 'thirdDose' })}
+                disabled={!isDoseEnabled(2)}
+              >
+                <Text style={[styles.textInput, styles.centeredText]}>{doses.thirdDose}</Text>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -150,7 +216,7 @@ const NewMedicineReminder = () => {
             />
           </View>
 
-          <TouchableOpacity style={styles.saveButton} onPress={() => console.log('Save button pressed')}>
+          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
             <Text style={styles.saveButtonText}>Save Medicine</Text>
           </TouchableOpacity>
         </ScrollView>
@@ -177,6 +243,24 @@ const NewMedicineReminder = () => {
             </View>
           </View>
         </Modal>
+
+        {showDatePicker.visible && (
+          <DateTimePicker
+            value={showDatePicker.field === 'beginDate' ? beginDate : endDate}
+            mode="date"
+            display="default"
+            onChange={handleDateChange}
+          />
+        )}
+
+        {showTimePicker.visible && (
+          <DateTimePicker
+            value={new Date(parseTimeString(doses[showTimePicker.field]))}
+            mode="time"
+            display="default"
+            onChange={handleTimeChange}
+          />
+        )}
       </View>
     </KeyboardAvoidingView>
   );
@@ -209,7 +293,7 @@ const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
     paddingHorizontal: 20,
-    paddingBottom: 140,  
+    paddingBottom: 120,
   },
   formGroup: {
     marginBottom: 20,
@@ -242,6 +326,10 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 50,
     paddingHorizontal: 10,
+    textAlignVertical: 'center',
+  },
+  centeredText: {
+    textAlignVertical: 'center',
   },
   inputIcon: {
     marginRight: 10,
@@ -290,6 +378,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  disabledInput: {
+    backgroundColor: '#e0e0e0',
+  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -311,3 +402,4 @@ const styles = StyleSheet.create({
 });
 
 export default NewMedicineReminder;
+
