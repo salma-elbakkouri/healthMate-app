@@ -17,6 +17,7 @@ import Profile from './components/Profile';
 import EditProfile from './components/EditProfile';
 import Records from './components/Records' ;
 import NewMedicineReminder from './components/NewMedicineReminder';
+import UpdateMedicineReminder from './components/UpdateMedicineReminder ';
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,7 @@ const App = () => {
         <Stack.Screen name="EditProfile" component={EditProfile} />
         <Stack.Screen name="Records" component={Records} />
         <Stack.Screen name="NewMedicineReminder" component={NewMedicineReminder} />
+        <Stack.Screen name="UpdateMedicineReminder" component={UpdateMedicineReminder} />
         
       </Stack.Navigator>
     </NavigationContainer>

@@ -3,7 +3,7 @@
 import { auth, firestore } from './firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { Alert } from 'react-native';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDocs, collection, query, where, deleteDoc, updateDoc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -89,3 +89,41 @@ export const saveMedicineReminder = async (userId, pillName, amount, frequency, 
     Alert.alert('Error', 'Failed to save medicine reminder. Please try again.');
   }
 };
+
+
+export const fetchMedicineReminders = async (userId) => {
+  try {
+    const q = query(collection(firestore, 'medicines'), where('userId', '==', userId));
+    const querySnapshot = await getDocs(q);
+    const medicines = [];
+    querySnapshot.forEach((doc) => {
+      medicines.push({ id: doc.id, ...doc.data() });
+    });
+    return medicines;
+  } catch (error) {
+    console.error('Error fetching medicine reminders:', error);
+    return [];
+  }
+};
+
+
+export const deleteMedicineReminder = async (docId) => {
+  try {
+    await deleteDoc(doc(firestore, 'medicines', docId));
+    Alert.alert('Success', 'Medicine reminder deleted successfully.');
+  } catch (error) {
+    console.error('Error deleting medicine reminder:', error);
+    Alert.alert('Error', 'Failed to delete medicine reminder. Please try again.');
+  }
+};
+
+// Update medicine reminder
+export const updateMedicineReminder = async (docId, updatedData) => {
+  try {
+    await updateDoc(doc(firestore, 'medicines', docId), updatedData);
+    Alert.alert('Success', 'Medicine reminder updated successfully.');
+  } catch (error) {
+    console.error('Error updating medicine reminder:', error);
+    Alert.alert('Error', 'Failed to update medicine reminder. Please try again.');
+  }
+};  
