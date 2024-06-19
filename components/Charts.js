@@ -35,8 +35,8 @@ const Charts = () => {
         <Text style={styles.chartTitle}>Health Conditions</Text>
         <PieChart
           data={pieChartData}
-          width={280}
-          height={160}
+          width={260}
+          height={170}
           borderRadius={10}
           chartConfig={{
             backgroundGradientFrom: '#1E3C42',
@@ -45,7 +45,7 @@ const Charts = () => {
           }}
           accessor="population"
           backgroundColor="transparent"
-          paddingLeft="5"
+          paddingLeft="15"
         />
       </View>
 
@@ -53,7 +53,7 @@ const Charts = () => {
         <Text style={styles.chartTitle}>Health Risks</Text>
         <BarChart
           data={barChartData}
-          width={280}
+          width={260}
           height={170}
           yAxisLabel=""
           chartConfig={{
@@ -69,7 +69,7 @@ const Charts = () => {
         <Text style={styles.chartTitle}>Health Trends</Text>
         <LineChart
           data={lineChartData}
-          width={280}
+          width={260}
           height={170}
           chartConfig={{
             backgroundGradientFrom: '#1E3C42',
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
     marginBottom: 20,
-    padding: 15,
+    padding: 20,
     borderWidth: 0.4,
     borderColor: 'lightgrey',
   },
