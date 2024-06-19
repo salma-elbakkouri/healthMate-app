@@ -17,12 +17,24 @@ const NewMedicineReminder = () => {
   const [frequency, setFrequency] = useState('3 times');
   const [doses, setDoses] = useState({ firstDose: '8:00 AM', secondDose: '12:00 PM', thirdDose: '6:00 PM' });
   const [notificationEnabled, setNotificationEnabled] = useState(true);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [medicationModalVisible, setMedicationModalVisible] = useState(false);
+  const [frequencyModalVisible, setFrequencyModalVisible] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState({ visible: false, field: '' });
   const [showDatePicker, setShowDatePicker] = useState({ visible: false, field: '' });
 
   const frequencies = ['1 time', '2 times', '3 times'];
-  
+  const pills = [
+    'Paracetamol Extra',
+    'Doliprane',
+    'Vitamin C',
+    'Ibuprofen',
+    'Aspirin',
+    'Amoxicillin',
+    'Metformin',
+    'Simvastatin',
+    'Omeprazole',
+    'Lisinopril'
+  ];
 
   const handleSave = async () => {
     const auth = getAuth();
@@ -30,6 +42,12 @@ const NewMedicineReminder = () => {
     console.log('Save button pressed');
 
     try {
+      const times = parseInt(frequency.split(' ')[0], 10);
+      const selectedDoses = {};
+      if (times >= 1) selectedDoses.firstDose = doses.firstDose;
+      if (times >= 2) selectedDoses.secondDose = doses.secondDose;
+      if (times >= 3) selectedDoses.thirdDose = doses.thirdDose;
+
       await saveMedicineReminder(
         userId,
         medication,
@@ -37,7 +55,7 @@ const NewMedicineReminder = () => {
         frequency,
         beginDate,
         endDate,
-        doses,
+        selectedDoses,
         notificationEnabled
       );
     } catch (error) {
@@ -47,9 +65,15 @@ const NewMedicineReminder = () => {
     navigation.navigate(Reminder);
   };
 
+
   const handleFrequencySelect = (item) => {
     setFrequency(item);
-    setModalVisible(false);
+    setFrequencyModalVisible(false);
+  };
+
+  const handleMedicationSelect = (item) => {
+    setMedication(item);
+    setMedicationModalVisible(false);
   };
 
   const handleTimeChange = (event, selectedTime) => {
@@ -115,12 +139,12 @@ const NewMedicineReminder = () => {
             <Text style={styles.label}>Pills name</Text>
             <View style={styles.inputContainer}>
               <FontAwesome5 name="pills" size={16} color="#4D869C" style={styles.inputIcon} />
-              <TextInput
+              <TouchableOpacity
                 style={styles.textInput}
-                value={medication}
-                onChangeText={(text) => setMedication(text)}
-                placeholder="Enter pill name"
-              />
+                onPress={() => setMedicationModalVisible(true)}
+              >
+                <Text style={styles.textInput}>{medication}</Text>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -144,7 +168,7 @@ const NewMedicineReminder = () => {
 
           <View style={styles.formGroup}>
             <Text style={styles.label}>Frequency per day</Text>
-            <TouchableOpacity style={styles.inputContainer} onPress={() => setModalVisible(true)}>
+            <TouchableOpacity style={styles.inputContainer} onPress={() => setFrequencyModalVisible(true)}>
               <FontAwesome name="hashtag" size={16} color="#4D869C" style={styles.inputIcon} />
               <Text style={[styles.textInput, { lineHeight: 50 }]}>{frequency}</Text>
             </TouchableOpacity>
@@ -175,39 +199,41 @@ const NewMedicineReminder = () => {
           </View>
 
           <View style={styles.row}>
-            <View style={[styles.formGroup, styles.thirdWidth]}>
-              <Text style={styles.label}>1st dose</Text>
-              <TouchableOpacity
-                style={[styles.inputContainer, !isDoseEnabled(0) && styles.disabledInput]}
-                onPress={() => isDoseEnabled(0) && setShowTimePicker({ visible: true, field: 'firstDose' })}
-                disabled={!isDoseEnabled(0)}
-              >
-                <Text style={[styles.textInput, styles.centeredText]}>{doses.firstDose}</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={[styles.formGroup, styles.thirdWidth]}>
-              <Text style={styles.label}>2nd dose</Text>
-              <TouchableOpacity
-                style={[styles.inputContainer, !isDoseEnabled(1) && styles.disabledInput]}
-                onPress={() => isDoseEnabled(1) && setShowTimePicker({ visible: true, field: 'secondDose' })}
-                disabled={!isDoseEnabled(1)}
-              >
-                <Text style={[styles.textInput, styles.centeredText]}>{doses.secondDose}</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={[styles.formGroup, styles.thirdWidth]}>
-              <Text style={styles.label}>3rd dose</Text>
-              <TouchableOpacity
-                style={[styles.inputContainer, !isDoseEnabled(2) && styles.disabledInput]}
-                onPress={() => isDoseEnabled(2) && setShowTimePicker({ visible: true, field: 'thirdDose' })}
-                disabled={!isDoseEnabled(2)}
-              >
-                <Text style={[styles.textInput, styles.centeredText]}>{doses.thirdDose}</Text>
-              </TouchableOpacity>
-            </View>
+            {isDoseEnabled(0) && (
+              <View style={[styles.formGroup, styles.thirdWidth]}>
+                <Text style={styles.label}>1st dose</Text>
+                <TouchableOpacity
+                  style={styles.inputContainer}
+                  onPress={() => setShowTimePicker({ visible: true, field: 'firstDose' })}
+                >
+                  <Text style={[styles.textInput, styles.centeredText]}>{doses.firstDose}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            {isDoseEnabled(1) && (
+              <View style={[styles.formGroup, styles.thirdWidth]}>
+                <Text style={styles.label}>2nd dose</Text>
+                <TouchableOpacity
+                  style={styles.inputContainer}
+                  onPress={() => setShowTimePicker({ visible: true, field: 'secondDose' })}
+                >
+                  <Text style={[styles.textInput, styles.centeredText]}>{doses.secondDose}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            {isDoseEnabled(2) && (
+              <View style={[styles.formGroup, styles.thirdWidth]}>
+                <Text style={styles.label}>3rd dose</Text>
+                <TouchableOpacity
+                  style={styles.inputContainer}
+                  onPress={() => setShowTimePicker({ visible: true, field: 'thirdDose' })}
+                >
+                  <Text style={[styles.textInput, styles.centeredText]}>{doses.thirdDose}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
+
 
           <View style={styles.formGroupRow}>
             <Text style={styles.label}>Notification</Text>
@@ -229,8 +255,29 @@ const NewMedicineReminder = () => {
         <Modal
           transparent={true}
           animationType="slide"
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
+          visible={medicationModalVisible}
+          onRequestClose={() => setMedicationModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <FlatList
+                data={pills}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => handleMedicationSelect(item)}>
+                    <Text style={styles.modalItem}>{item}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
+          transparent={true}
+          animationType="slide"
+          visible={frequencyModalVisible}
+          onRequestClose={() => setFrequencyModalVisible(false)}
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
@@ -405,4 +452,3 @@ const styles = StyleSheet.create({
 });
 
 export default NewMedicineReminder;
-

@@ -15,21 +15,22 @@ const Reminder = ({ navigation }) => {
     const loadReminders = async () => {
       const fetchedMedicines = await fetchMedicineReminders(userId);
       setMedicines(fetchedMedicines);
+      logReminders(fetchedMedicines); // Log all details including doses
     };
 
     loadReminders();
   }, [userId]);
-
 
   useFocusEffect(
     React.useCallback(() => {
       const loadReminders = async () => {
         const fetchedMedicines = await fetchMedicineReminders(userId);
         setMedicines(fetchedMedicines);
+        logReminders(fetchedMedicines); // Log all details including doses
       };
 
       loadReminders();
-    },[userId])
+    }, [userId])
   );
 
   const handleDelete = async (docId) => {
@@ -51,6 +52,27 @@ const Reminder = ({ navigation }) => {
     );
   };
 
+  // Log all details of the medicine reminders, including doses
+  const logReminders = (reminders) => {
+    reminders.forEach(reminder => {
+      console.log(`Pill name: ${reminder.pillName}`);
+      console.log(`Amount: ${reminder.amount}`);
+      console.log(`Frequency: ${reminder.frequency}`);
+      console.log(`Begin Date: ${reminder.beginDate}`);
+      console.log(`End Date: ${reminder.endDate}`);
+
+      // Log all doses dynamically
+      ['firstDose', 'secondDose', 'thirdDose'].forEach((dose, index) => {
+        if (reminder[dose]) {
+          console.log(`${index + 1}st dose: ${reminder[dose]}`);
+        }
+      });
+
+      console.log('-----------------------');
+    });
+  };
+
+  // Render only pill name, amount, and frequency in the UI
   const renderItem = ({ item }) => (
     <View style={styles.card}>
       <Image source={require('../assets/pill.png')} style={styles.pillImage} />
@@ -69,9 +91,10 @@ const Reminder = ({ navigation }) => {
         <TouchableOpacity style={styles.iconButton} onPress={() => handleDelete(item.id)}>
           <Icon name="trash" size={20} color="#5b548d" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('UpdateMedicineReminder', { medicine: item })}>
+        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('UpdateMedicineReminder', { reminderId: item.id })}>
           <Icon name="pencil" size={20} color="#5b548d" />
         </TouchableOpacity>
+
       </View>
     </View>
   );
@@ -176,12 +199,12 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     alignItems: 'center',
     justifyContent: 'space-between',
-    shadowColor: '#5b548d', // Shadow color
-    shadowOffset: { width: 0, height: 2 }, // Offset
-    shadowOpacity: 0.25, // Shadow opacity
-    shadowRadius: 3.84, // Shadow radius
-    elevation: 4, // Elevation for Android
-  },  
+    shadowColor: '#5b548d',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 4,
+  },
   pillImage: {
     width: 50,
     height: 50,

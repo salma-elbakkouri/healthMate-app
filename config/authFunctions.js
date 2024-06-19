@@ -1,12 +1,8 @@
-// authFunctions.js
-
 import { auth, firestore } from './firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { Alert } from 'react-native';
-import { doc, setDoc, getDocs, collection, query, where, deleteDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, getDocs, collection, query, where, deleteDoc, updateDoc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
 
 // Login user
 export const loginUser = async (email, password) => {
@@ -69,18 +65,23 @@ export const registerUser = async (fullName, email, password, imageIndex = 0) =>
 
 export const saveMedicineReminder = async (userId, pillName, amount, frequency, beginDate, endDate, doses, notificationEnabled) => {
   try {
-    await setDoc(doc(firestore, 'medicines', `${userId}_${pillName}`), {
+    const data = {
       userId: userId,
       pillName: pillName,
       amount: amount,
       frequency: frequency,
       beginDate: beginDate.toISOString(), // Convert to ISO string
       endDate: endDate.toISOString(), // Convert to ISO string
-      firstDose: doses.firstDose,
-      secondDose: doses.secondDose,
-      thirdDose: doses.thirdDose,
       notificationEnabled: notificationEnabled
-    });
+    };
+
+    // Add doses based on the frequency
+    const times = parseInt(frequency.split(' ')[0], 10);
+    if (times >= 1) data.firstDose = doses.firstDose;
+    if (times >= 2) data.secondDose = doses.secondDose;
+    if (times >= 3) data.thirdDose = doses.thirdDose;
+
+    await setDoc(doc(firestore, 'medicines', `${userId}_${pillName}`), data);
 
     console.log('Medicine reminder saved successfully');
     Alert.alert('Success', 'Medicine reminder saved successfully.');
@@ -89,6 +90,7 @@ export const saveMedicineReminder = async (userId, pillName, amount, frequency, 
     Alert.alert('Error', 'Failed to save medicine reminder. Please try again.');
   }
 };
+
 
 
 export const fetchMedicineReminders = async (userId) => {
@@ -107,6 +109,10 @@ export const fetchMedicineReminders = async (userId) => {
 };
 
 
+
+
+
+
 export const deleteMedicineReminder = async (docId) => {
   try {
     await deleteDoc(doc(firestore, 'medicines', docId));
@@ -117,13 +123,57 @@ export const deleteMedicineReminder = async (docId) => {
   }
 };
 
-// Update medicine reminder
-export const updateMedicineReminder = async (docId, updatedData) => {
+
+// Other imports and functions
+
+export const fetchMedicineReminderById = async (reminderId) => {
+  if (!reminderId) {
+    console.error('Reminder ID is undefined or null');
+    return null;
+  }
   try {
-    await updateDoc(doc(firestore, 'medicines', docId), updatedData);
+    const reminderDoc = await getDoc(doc(firestore, 'medicines', reminderId));
+    if (reminderDoc.exists()) {
+      return { id: reminderDoc.id, ...reminderDoc.data() };
+    } else {
+      console.log('No such reminder!');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching medicine reminder:', error);
+    return null;
+  }
+};
+
+// Ensure this function is exported properly
+
+
+
+// Update a specific medicine reminder
+export const updateMedicineReminder = async (reminderId, userId, pillName, amount, frequency, beginDate, endDate, doses, notificationEnabled) => {
+  try {
+    const data = {
+      userId: userId,
+      pillName: pillName,
+      amount: amount,
+      frequency: frequency,
+      beginDate: beginDate.toISOString(), // Convert to ISO string
+      endDate: endDate.toISOString(), // Convert to ISO string
+      notificationEnabled: notificationEnabled
+    };
+
+    // Add doses based on the frequency
+    const times = parseInt(frequency.split(' ')[0], 10);
+    if (times >= 1) data.firstDose = doses.firstDose;
+    if (times >= 2) data.secondDose = doses.secondDose;
+    if (times >= 3) data.thirdDose = doses.thirdDose;
+
+    await updateDoc(doc(firestore, 'medicines', reminderId), data);
+
+    console.log('Medicine reminder updated successfully');
     Alert.alert('Success', 'Medicine reminder updated successfully.');
   } catch (error) {
     console.error('Error updating medicine reminder:', error);
     Alert.alert('Error', 'Failed to update medicine reminder. Please try again.');
   }
-};  
+};
