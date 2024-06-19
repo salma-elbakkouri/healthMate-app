@@ -35,7 +35,7 @@ export const forgotPassword = async (email) => {
 };
 
 
-export const registerUser = async (fullName, email, password, imageIndex = 0) => {
+export const registerUser = async (fullName, email, password, imageIndex = 0 , expoPushToken) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
@@ -43,13 +43,14 @@ export const registerUser = async (fullName, email, password, imageIndex = 0) =>
     await setDoc(doc(firestore, 'users', userCredential.user.uid), {
       fullName: fullName,
       email: email,
-      imageIndex: imageIndex, // Use 'imageIndex' without spaces and as a number
+      imageIndex: imageIndex, 
+      expoPushToken: expoPushToken,
     });
 
     // Save full name, email, and image index in AsyncStorage
     await AsyncStorage.setItem('userFullName', fullName);
     await AsyncStorage.setItem('userEmail', email);
-    await AsyncStorage.setItem('userImageIndex', imageIndex.toString()); // Store as string in AsyncStorage
+    await AsyncStorage.setItem('userImageIndex', imageIndex.toString()); 
 
     console.log('User full name, email, and image index saved in AsyncStorage');
 
@@ -63,7 +64,7 @@ export const registerUser = async (fullName, email, password, imageIndex = 0) =>
 
 
 
-export const saveMedicineReminder = async (userId, pillName, amount, frequency, beginDate, endDate, doses, notificationEnabled) => {
+export const saveMedicineReminder = async (userId, pillName, amount, frequency, beginDate, endDate, doses, notificationEnabled , expoPushToken) => {
   try {
     const data = {
       userId: userId,
@@ -72,7 +73,7 @@ export const saveMedicineReminder = async (userId, pillName, amount, frequency, 
       frequency: frequency,
       beginDate: beginDate.toISOString(), // Convert to ISO string
       endDate: endDate.toISOString(), // Convert to ISO string
-      notificationEnabled: notificationEnabled
+      notificationEnabled: notificationEnabled,
     };
 
     // Add doses based on the frequency
@@ -82,6 +83,11 @@ export const saveMedicineReminder = async (userId, pillName, amount, frequency, 
     if (times >= 3) data.thirdDose = doses.thirdDose;
 
     await setDoc(doc(firestore, 'medicines', `${userId}_${pillName}`), data);
+
+    if (notificationEnabled && expoPushToken) {
+      const firstDoseTime = new Date(beginDate).getTime() - Date.now();
+      await scheduleMedicineReminderNotification(expoPushToken, pillName, firstDoseTime / 1000); // Convert to seconds
+    }
 
     console.log('Medicine reminder saved successfully');
     Alert.alert('Success', 'Medicine reminder saved successfully.');
@@ -177,3 +183,27 @@ export const updateMedicineReminder = async (reminderId, userId, pillName, amoun
     Alert.alert('Error', 'Failed to update medicine reminder. Please try again.');
   }
 };
+
+
+// export const scheduleMedicineReminderNotification = async (expoPushToken, pillName, time) => {
+//   try {
+//     const schedulingOptions = {
+//       content: {
+//         title: 'Medicine Reminder',
+//         body: `Time to take your medicine: ${pillName}`,
+//         sound: 'default',
+//       },
+//       trigger: {
+//         seconds: time, // Schedule time in seconds
+//       },
+//     };
+
+//     await Notifications.scheduleNotificationAsync(schedulingOptions);
+
+//     console.log('Medicine reminder notification scheduled successfully');
+//     Alert.alert('Success', 'Medicine reminder notification scheduled successfully.');
+//   } catch (error) {
+//     console.error('Error scheduling medicine reminder notification:', error);
+//     Alert.alert('Error', 'Failed to schedule medicine reminder notification. Please try again.');
+//   }
+// };
