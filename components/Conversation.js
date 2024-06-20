@@ -1,107 +1,66 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList } from 'react-native';
-import axios from 'axios';
-import { firestore } from '../config/firebaseConfig';
-import { collection, addDoc, getDocs, query, orderBy, serverTimestamp } from 'firebase/firestore';
+// Conversation.js
+import React, { useEffect, useState, useRef } from 'react';
+import { View, TextInput, Button, Text, StyleSheet, ScrollView } from 'react-native';
+import { Dialogflow_V2 } from 'react-native-dialogflow';
+// import dialogflowConfig from '../assets/myfirstagent-tjct-91839747b0c7.json'; 
 
-const Conversation = ({ navigation }) => {
+const Conversation = () => {
+  const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
+  const scrollViewRef = useRef();
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const q = query(collection(firestore, 'messages'), orderBy('timestamp', 'asc'));
-        const querySnapshot = await getDocs(q);
-        const messagesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setMessages(messagesData);
-      } catch (error) {
-        console.error('Error fetching messages:', error);
-      }
-    };
+  // useEffect(() => {
+  //   Dialogflow_V2.setConfiguration(
+  //     dialogflowConfig.client_email,
+  //     dialogflowConfig.private_key,
+  //     Dialogflow_V2.LANG_ENGLISH,
+  //     dialogflowConfig.project_id
+  //   );
+  // }, []);
 
-    fetchMessages();
-  }, []);
-
-  const handleSend = async () => {
-    if (input.trim() === '') return;
-
-    const newMessage = {
-      text: input,
-      timestamp: serverTimestamp(),
-      user: 'user',
-    };
-
-    try {
-      await addDoc(collection(firestore, 'messages'), newMessage);
-      setMessages(prevMessages => [...prevMessages, newMessage]);
-      setInput('');
-      getBotResponse(input); // Get bot response after sending user message
-    } catch (error) {
-      console.error('Error sending message:', error);
-    }
-  };
-
-  const getBotResponse = async (userMessage) => {
-    try {
-      const response = await axios.post(
-        'https://api.openai.com/v1/completions',
-        {
-          model: 'GPT base',
-          prompt: userMessage,
-          max_tokens: 150,
-          n: 1,
-          stop: null,
-          temperature: 0.7,
+  const sendMessage = () => {
+    if (message.trim()) {
+      const newMessages = [...messages, { sender: 'user', text: message }];
+      setMessages(newMessages);
+      setMessage('');
+      Dialogflow_V2.requestQuery(
+        message,
+        result => {
+          console.log('Dialogflow response:', result); // Log the full response from Dialogflow
+          if (result && result.queryResult && result.queryResult.fulfillmentText) {
+            const botMessage = result.queryResult.fulfillmentText;
+            setMessages(prevMessages => [...prevMessages, { sender: 'bot', text: botMessage }]);
+          } else {
+            console.error('No fulfillment text found in Dialogflow response');
+          }
         },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization':'MyAPI Key'
-          },
+        error => {
+          console.error('Dialogflow request failed', error); // Log any errors
         }
       );
-  
-      const botMessage = {
-        text: response.data.choices[0].text.trim(),
-        timestamp: serverTimestamp(),
-        user: 'bot',
-      };
-  
-      await addDoc(collection(firestore, 'messages'), botMessage);
-      setMessages(prevMessages => [...prevMessages, botMessage]);
-    } catch (error) {
-      console.error('Error getting bot response:', error);
-      console.error('Error details:', error.response); // Log the full error response
     }
   };
-  
-
-  const renderItem = ({ item }) => (
-    <View style={[styles.message, item.user === 'bot' ? styles.botMessage : styles.userMessage]}>
-      <Text style={styles.messageText}>{item.text}</Text>
-    </View>
-  );
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={messages}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-        style={styles.messageList}
+      <ScrollView
+        style={styles.messagesContainer}
+        ref={scrollViewRef}
+        onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+      >
+        {messages.map((msg, index) => (
+          <View key={index} style={[styles.message, msg.sender === 'user' ? styles.userMessage : styles.botMessage]}>
+            <Text>{msg.text}</Text>
+          </View>
+        ))}
+      </ScrollView>
+      <TextInput
+        style={styles.input}
+        placeholder="Type a message"
+        value={message}
+        onChangeText={setMessage}
       />
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Type a message"
-          value={input}
-          onChangeText={setInput}
-        />
-        <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-          <Text style={styles.sendButtonText}>Send</Text>
-        </TouchableOpacity>
-      </View>
+      <Button title="Send" onPress={sendMessage} />
     </View>
   );
 };
@@ -109,48 +68,33 @@ const Conversation = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
+    justifyContent: 'flex-end',
+    padding: 20,
+    backgroundColor: '#fff',
   },
-  messageList: {
+  messagesContainer: {
     flex: 1,
+    marginBottom: 10,
   },
   message: {
     padding: 10,
-    margin: 10,
-    borderRadius: 10,
+    borderRadius: 5,
+    marginVertical: 5,
+    maxWidth: '80%',
   },
   userMessage: {
-    backgroundColor: '#DCF8C6',
     alignSelf: 'flex-end',
+    backgroundColor: '#dcf8c6',
   },
   botMessage: {
-    backgroundColor: '#E8E8E8',
     alignSelf: 'flex-start',
-  },
-  messageText: {
-    fontSize: 16,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    padding: 10,
-    borderTopWidth: 1,
-    borderColor: '#E8E8E8',
+    backgroundColor: '#f1f0f0',
   },
   input: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
+    height: 40,
+    borderColor: 'gray',
     borderWidth: 1,
-    borderColor: '#E8E8E8',
-  },
-  sendButton: {
-    justifyContent: 'center',
-    paddingHorizontal: 15,
-  },
-  sendButtonText: {
-    color: '#1E3942',
-    fontWeight: 'bold',
+    paddingHorizontal: 10,
   },
 });
 
