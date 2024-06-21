@@ -16,6 +16,7 @@ import SignUp from './components/SignUp';
 import Profile from './components/Profile';
 import EditProfile from './components/EditProfile';
 import Records from './components/Records' ;
+import Records from './components/Records' ;
 import NewMedicineReminder from './components/NewMedicineReminder';
 import UpdateMedicineReminder from './components/UpdateMedicineReminder ';
 import Conversation from './components/Conversation';
@@ -27,9 +28,13 @@ const App = () => {
 
   console.disableYellowBox = true;
 
+
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Welcome" component={Welcome} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="SignUp" component={SignUp} />
