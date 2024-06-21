@@ -1,7 +1,7 @@
 // Conversation.js
 import React, { useEffect, useState, useRef } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, ScrollView } from 'react-native';
-import { Dialogflow_V2 } from 'react-native-dialogflow';
+// import { Dialogflow_V2 } from 'react-native-dialogflow';
 
 
 

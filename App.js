@@ -19,6 +19,7 @@ import Records from './components/Records' ;
 import NewMedicineReminder from './components/NewMedicineReminder';
 import UpdateMedicineReminder from './components/UpdateMedicineReminder ';
 import Conversation from './components/Conversation';
+import Chatbot from './components/Chatbot';
 
 const Stack = createStackNavigator();
 
@@ -47,6 +48,7 @@ const App = () => {
         <Stack.Screen name="NewMedicineReminder" component={NewMedicineReminder} />
         <Stack.Screen name="UpdateMedicineReminder" component={UpdateMedicineReminder} />
         <Stack.Screen name="Conversation" component={Conversation} />
+        <Stack.Screen name="Chatbot" component={Chatbot} />
         
       </Stack.Navigator>
     </NavigationContainer>
