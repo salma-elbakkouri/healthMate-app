@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Dialogflow_V2 } from 'react-native-dialogflow';
-import dialogflowConfig from '../assets/myfirstagent-tjct-cf15507a4e1e.json';
+// import dialogflowConfig from '../assets/myfirstagent-tjct-cf15507a4e1e.json';
 
 const Conversation = () => {
   const [message, setMessage] = useState('');
@@ -10,12 +10,12 @@ const Conversation = () => {
   const scrollViewRef = useRef();
 
   useEffect(() => {
-    Dialogflow_V2.setConfiguration(
-      dialogflowConfig.client_email,
-      dialogflowConfig.private_key,
-      Dialogflow_V2.LANG_ENGLISH,
-      dialogflowConfig.project_id
-    );
+    // Dialogflow_V2.setConfiguration(
+    //   dialogflowConfig.client_email,
+    //   dialogflowConfig.private_key,
+    //   Dialogflow_V2.LANG_ENGLISH,
+    //   dialogflowConfig.project_id
+    // );
 
     // Simulate a delay for loading (you can remove this in a real-world app)
     setTimeout(() => {

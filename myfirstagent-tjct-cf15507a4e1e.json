@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "myfirstagent-tjct",
+  "private_key_id": "cf15507a4e1e043a6d128baf38aa325612d40983",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCunfJ6D3ZWE1Kr\nd3zujf5cwcMIFwhPk+oCLonmYtdQr6N2WODAy32noazIvQhE8H4bCfheLtEiKsuj\nyWkw2STN5CCGaTfcbp8epPEAEgoiFo9cIt1enckD++/zEQpc5TvLoViyzjEfvZNr\nA0KZC+33hh0bFlRQsOwRGZt/6P4XzZD6ybS52hnxjx0Od4vUK5Nb5vq5GFh2WEqC\niqyZU8wfHCghF/Klt6GLAHQglFBftQx9TShwzCanRxk2nrwQ4TkjgFRXnMa2yKK6\n+Asq3Et7+PpX+hKzR3bJLX7COlhpW7ikFF4M7i4QO90qZoUsTSB4idHfgLCI9zLg\n9M87AR8bAgMBAAECggEATrc+ER86ScgxKsHVLFcPVPI2AMYdRX5Y7b3cBWMGTEW5\nKwca3l59WR2NXfq1KRq+xmKit5ZkSYJARafshwxERppxvRXejDzD91UEnXMEZWSF\nINRItbfsX6LpgsnqQYFHCN9FtGk2BOh5dbLFCWgy0LQBF+5jePKgoH7KNgmqzcBr\nW+82pObVGKx0VKUnsWsVBPFX9ZyGDb1GgpqHGDVZJuJYjUnciLuRl5kljytCcbV3\npvvXVck9ZIZdvc6AH9Cy3vDc+2HSG142LB95dbOpnXO9qopvoq6X7ZLzHclOSJrw\nthYbEF+Sh/pbYoEnsDYt/KXLo+2uMKd7O0h0jbykWQKBgQDUvpBenV/kzhzbpCel\nkY1q2tKQrfA/d90Jwba/vMhCv7pGl6xraoyqPW84mzfCBKstotughHgmOTOnwpOL\nvHJlF2bBjOyXopYJrdBGFR5oY/PzYrOpIwFVWC/Fgq4//MFblgvtowBE4rKNsqL+\nKc2/JoXOM/4t4kNQABzRDNtdqQKBgQDSHtXZxOTpJQtqwqdhWT1/owXA6rSlQ4x/\ns9n0WbtGO5GzTXHWidevuQbOBCbzxfRqrfX2bMRp4yqZPO5WsTQ3Ieq0PdiQU6De\n5gj7UrntvgqkJYJJi2/RYdqlMeeSvQx0jfjDMmSZSM6DBcb3PhAvzf2MMCUjOQ+B\nF/un6HFpIwKBgAyk0sG8yrE3isGHDRArCWObY75TiB7NieaFi83zc1d8O57sbsPn\njjqj8hNELlkqm93XewQcO2PSLH7A8rHwXkAh1uqT7I/Kiu5CVUmFAcykfCAv8ouP\n2Alxd01eyeplpDxEO6tA78goTQJc5pECfQbqTDOIJYgmlWeQyiWmhPcZAoGAPLEv\ncBGRVU6f95x2IIZYXy/Fj627tCjIwnI+uHfawjSepz3tbdyu8lDtiEBmx+8b5FyP\nOTi9myBEw7J33Y6d2HbxhlJ+5WFijD/BxGZm0icch8FV2sxt5frv3tuFWjtFB72i\nZy99I1GGZQ4cJHpGzqgfXojhkUUAF3fH9v4LFCUCgYBwd7e5P+ZFbMVtRKOqL4Dq\nSbHHcI7kN5wzYsucJya6KeSdUobXx8SC9KLv21nibDItfGlY/IxqnUGIb/CatEqs\nLl4ZDEo44tc7U4knu5yGSc5I02uqa2LSOpm/A/PuJFcZ+e4K2d4KALF63SK7yTnR\nPSF1nH0y3m58JRoYpKeSdg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "salma-el-bakkouri@myfirstagent-tjct.iam.gserviceaccount.com",
+  "client_id": "116901432220952189608",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/salma-el-bakkouri%40myfirstagent-tjct.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
