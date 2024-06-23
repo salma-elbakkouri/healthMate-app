@@ -9,7 +9,7 @@ import { firestore, auth } from '../config/firebaseConfig';
 const Profile = ({ navigation }) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-  const [profileImage, setProfileImage] = useState(require('../assets/avatarboy.jpg')); // Set initial image to boy for a default
+  const [profileImage, setProfileImage] = useState(require('../assets/avatars/avatarboy.jpg')); // Set initial image to boy for a default
 
   useEffect(() => {
     fetchUserData();
@@ -68,9 +68,9 @@ const Profile = ({ navigation }) => {
   const updateProfileImage = (index) => {
     // Check index and set the appropriate image
     if (index === '1') {
-      setProfileImage(require('../assets/avatargirl.png'));
+      setProfileImage(require('../assets/avatars/avatargirl.png'));
     } else {
-      setProfileImage(require('../assets/avatarboy.jpg'));
+      setProfileImage(require('../assets/avatars/avatarboy.jpg'));
     }
   };
 

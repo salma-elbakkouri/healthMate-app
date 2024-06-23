@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Switch, StyleSheet, ScrollView, KeyboardAvoidingView, Modal, FlatList, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Switch, StyleSheet, ScrollView, KeyboardAvoidingView, Modal, FlatList, Alert } from 'react-native';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import BottomMenu from './BottomMenu';
-import { saveMedicineReminder } from '../config/authFunctions';
 import { getAuth } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
-import Reminder from './Reminder';
+import Reminder from './Reminder'; 
+import { saveMedicineReminder } from '../config/authFunctions';
 
 const NewMedicineReminder = () => {
   const navigation = useNavigation();
-  const [medication, setMedication] = useState('Paracetamol Extra');
-  const [pillCount, setPillCount] = useState(4);
+  const [medication, setMedication] = useState('');
+  const [pillCount, setPillCount] = useState(0);
   const [beginDate, setBeginDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [frequency, setFrequency] = useState('3 times');
-  const [doses, setDoses] = useState({ firstDose: '8:00 AM', secondDose: '12:00 PM', thirdDose: '6:00 PM' });
-  const [notificationEnabled, setNotificationEnabled] = useState(true);
+  const [frequency, setFrequency] = useState('');
+  const [doses, setDoses] = useState({ firstDose: '', secondDose: '', thirdDose: '' });
+  const [notificationEnabled, setNotificationEnabled] = useState(false);
   const [medicationModalVisible, setMedicationModalVisible] = useState(false);
   const [frequencyModalVisible, setFrequencyModalVisible] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState({ visible: false, field: '' });
@@ -39,7 +39,6 @@ const NewMedicineReminder = () => {
   const handleSave = async () => {
     const auth = getAuth();
     const userId = auth.currentUser.uid;
-    console.log('Save button pressed');
 
     try {
       const times = parseInt(frequency.split(' ')[0], 10);
@@ -58,13 +57,14 @@ const NewMedicineReminder = () => {
         selectedDoses,
         notificationEnabled
       );
-    } catch (error) {
-      console.error('Error saving medicine reminder:', error);
-      Alert.alert('Error', 'Failed to save medicine reminder. Please try again.');
-    }
-    navigation.navigate(Reminder);
-  };
 
+      Alert.alert('Success', 'Medicine reminder added successfully.');
+      navigation.navigate(Reminder);
+    } catch (error) {
+      console.error('Error adding medicine reminder:', error);
+      Alert.alert('Error', 'Failed to add medicine reminder. Please try again.');
+    }
+  };
 
   const handleFrequencySelect = (item) => {
     setFrequency(item);
@@ -81,7 +81,7 @@ const NewMedicineReminder = () => {
       const hours = selectedTime.getHours();
       const minutes = selectedTime.getMinutes();
       const period = hours >= 12 ? 'PM' : 'AM';
-      const adjustedHours = hours % 12 || 12; // Convert 0 to 12 for 12 AM
+      const adjustedHours = hours % 12 || 12;
       const formattedTime = `${adjustedHours}:${minutes.toString().padStart(2, '0')} ${period}`;
 
       setDoses((prevDoses) => ({
@@ -129,10 +129,10 @@ const NewMedicineReminder = () => {
     <KeyboardAvoidingView behavior="padding" style={styles.keyboardAvoidingView}>
       <View style={styles.container}>
         <View style={styles.whiteHeader}>
-          <TouchableOpacity onPress={() => console.log('Back button pressed')}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <FontAwesome name="chevron-left" size={16} color="#1E3C42" />
           </TouchableOpacity>
-          <Text style={styles.newReminder}>New Medicine Reminder</Text>
+          <Text style={styles.newReminder}>Add New Medicine Reminder</Text>
         </View>
         <ScrollView contentContainerStyle={styles.content}>
           <View style={styles.formGroup}>
@@ -187,7 +187,7 @@ const NewMedicineReminder = () => {
             </View>
 
             <View style={[styles.formGroup, styles.halfWidth]}>
-              <Text style={styles.label}>Finish</Text>
+              <Text style={styles.label}>End</Text>
               <TouchableOpacity
                 style={styles.inputContainer}
                 onPress={() => setShowDatePicker({ visible: true, field: 'endDate' })}
@@ -198,120 +198,118 @@ const NewMedicineReminder = () => {
             </View>
           </View>
 
-          <View style={styles.row}>
-            {isDoseEnabled(0) && (
-              <View style={[styles.formGroup, styles.thirdWidth]}>
-                <Text style={styles.label}>1st dose</Text>
-                <TouchableOpacity
-                  style={styles.inputContainer}
-                  onPress={() => setShowTimePicker({ visible: true, field: 'firstDose' })}
-                >
-                  <Text style={[styles.textInput, styles.centeredText]}>{doses.firstDose}</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-            {isDoseEnabled(1) && (
-              <View style={[styles.formGroup, styles.thirdWidth]}>
-                <Text style={styles.label}>2nd dose</Text>
-                <TouchableOpacity
-                  style={styles.inputContainer}
-                  onPress={() => setShowTimePicker({ visible: true, field: 'secondDose' })}
-                >
-                  <Text style={[styles.textInput, styles.centeredText]}>{doses.secondDose}</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-            {isDoseEnabled(2) && (
-              <View style={[styles.formGroup, styles.thirdWidth]}>
-                <Text style={styles.label}>3rd dose</Text>
-                <TouchableOpacity
-                  style={styles.inputContainer}
-                  onPress={() => setShowTimePicker({ visible: true, field: 'thirdDose' })}
-                >
-                  <Text style={[styles.textInput, styles.centeredText]}>{doses.thirdDose}</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
+          {isDoseEnabled(0) && (
+            <View style={styles.formGroup}>
+              <Text style={styles.label}>First dose</Text>
+              <TouchableOpacity
+                style={styles.inputContainer}
+                onPress={() => setShowTimePicker({ visible: true, field: 'firstDose' })}
+              >
+                <FontAwesome name="clock-o" size={16} color="#4D869C" style={styles.inputIcon} />
+                <Text style={[styles.textInput, styles.centeredText]}>{doses.firstDose}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          {isDoseEnabled(1) && (
+            <View style={styles.formGroup}>
+              <Text style={styles.label}>Second dose</Text>
+              <TouchableOpacity
+                style={styles.inputContainer}
+                onPress={() => setShowTimePicker({ visible: true, field: 'secondDose' })}
+              >
+                <FontAwesome name="clock-o" size={16} color="#4D869C" style={styles.inputIcon} />
+                <Text style={[styles.textInput, styles.centeredText]}>{doses.secondDose}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          {isDoseEnabled(2) && (
+            <View style={styles.formGroup}>
+              <Text style={styles.label}>Third dose</Text>
+              <TouchableOpacity
+                style={styles.inputContainer}
+                onPress={() => setShowTimePicker({ visible: true, field: 'thirdDose' })}
+              >
+                <FontAwesome name="clock-o" size={16} color="#4D869C" style={styles.inputIcon} />
+                <Text style={[styles.textInput, styles.centeredText]}>{doses.thirdDose}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
 
-
-          <View style={styles.formGroupRow}>
+          <View style={styles.notifFormGroup}>
             <Text style={styles.label}>Notification</Text>
             <Switch
               value={notificationEnabled}
-              onValueChange={() => setNotificationEnabled(!notificationEnabled)}
-              trackColor={{ true: '#4D869C', false: '#ccc' }}
+              onValueChange={setNotificationEnabled}
+              trackColor={{ false: '#767577', true: '#81b0ff' }}
               thumbColor={notificationEnabled ? '#4D869C' : '#f4f3f4'}
             />
           </View>
 
           <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-            <Text style={styles.saveButtonText}>Save Medicine</Text>
+            <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>
         </ScrollView>
-
-        <BottomMenu activeScreen="Notifications" />
-
-        <Modal
-          transparent={true}
-          animationType="slide"
-          visible={medicationModalVisible}
-          onRequestClose={() => setMedicationModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <FlatList
-                data={pills}
-                keyExtractor={(item) => item}
-                renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => handleMedicationSelect(item)}>
-                    <Text style={styles.modalItem}>{item}</Text>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-          </View>
-        </Modal>
-
-        <Modal
-          transparent={true}
-          animationType="slide"
-          visible={frequencyModalVisible}
-          onRequestClose={() => setFrequencyModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <FlatList
-                data={frequencies}
-                keyExtractor={(item) => item}
-                renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => handleFrequencySelect(item)}>
-                    <Text style={styles.modalItem}>{item}</Text>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-          </View>
-        </Modal>
-
-        {showDatePicker.visible && (
-          <DateTimePicker
-            value={showDatePicker.field === 'beginDate' ? beginDate : endDate}
-            mode="date"
-            display="default"
-            onChange={handleDateChange}
-          />
-        )}
-
-        {showTimePicker.visible && (
-          <DateTimePicker
-            value={new Date(parseTimeString(doses[showTimePicker.field]))}
-            mode="time"
-            display="default"
-            onChange={handleTimeChange}
-          />
-        )}
+        <BottomMenu />
       </View>
+
+      {showTimePicker.visible && (
+        <DateTimePicker
+          value={new Date(parseTimeString(doses[showTimePicker.field] || '12:00 PM'))}
+          mode="time"
+          is24Hour={false}
+          display="default"
+          onChange={handleTimeChange}
+        />
+      )}
+
+      {showDatePicker.visible && (
+        <DateTimePicker
+          value={showDatePicker.field === 'beginDate' ? beginDate : endDate}
+          mode="date"
+          display="default"
+          onChange={handleDateChange}
+        />
+      )}
+
+      <Modal visible={medicationModalVisible} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Select Medication</Text>
+            <FlatList
+              data={pills}
+              renderItem={({ item }) => (
+                <TouchableOpacity style={styles.modalItem} onPress={() => handleMedicationSelect(item)}>
+                  <Text style={styles.modalItemText}>{item}</Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item) => item}
+            />
+            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setMedicationModalVisible(false)}>
+              <Text style={styles.modalCloseButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal visible={frequencyModalVisible} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Select Frequency</Text>
+            <FlatList
+              data={frequencies}
+              renderItem={({ item }) => (
+                <TouchableOpacity style={styles.modalItem} onPress={() => handleFrequencySelect(item)}>
+                  <Text style={styles.modalItemText}>{item}</Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item) => item}
+            />
+            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setFrequencyModalVisible(false)}>
+              <Text style={styles.modalCloseButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 };
@@ -347,6 +345,12 @@ const styles = StyleSheet.create({
   },
   formGroup: {
     marginBottom: 20,
+  },
+  notifFormGroup:{
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center',
+    marginBottom:20,
   },
   formGroupRow: {
     flexDirection: 'row',

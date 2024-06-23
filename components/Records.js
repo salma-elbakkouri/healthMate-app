@@ -6,12 +6,12 @@ import { FontAwesome } from '@expo/vector-icons'; // For icons
 
 // Define the images used for each record category
 const recordsImages = {
-  heart: require('../assets/heart.jpg'),
-  cancer: require('../assets/cancer.jpg'),
-  kidney: require('../assets/kidney2.png'),
-  cells: require('../assets/cells2.png'),
-  kidneytumors: require('../assets/kidneytumors2.png'),
-  lungs: require('../assets/lungs2.png'),
+  heart: require('../assets/home/heart.jpg'),
+  cancer: require('../assets/home/cancer.jpg'),
+  kidney: require('../assets/home/kidney2.png'),
+  cells: require('../assets/home/cells2.png'),
+  kidneytumors: require('../assets/home/kidneytumors2.png'),
+  lungs: require('../assets/home/lungs2.png'),
 };
 
 const Records = ({navigation}) => {

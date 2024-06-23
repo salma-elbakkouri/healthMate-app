@@ -5,11 +5,11 @@ import articlesData from '../assets/articles.json';
 import BottomMenu from '../components/BottomMenu'; // Import BottomMenu component
 
 const articleImages = {
-  steroidsbig: require('../assets/steroidsbig.png'),
-  depressionbig: require('../assets/depressionbig.png'),
-  burgersbig: require('../assets/burgersbig.png'),
-  'social-anxietybig': require('../assets/social-anxietybig.png'),
-  huggingbig: require('../assets/huggingbig.png'),
+  steroidsbig: require('../assets/home/steroidsbig.png'),
+  depressionbig: require('../assets/home/depressionbig.png'),
+  burgersbig: require('../assets/home/burgersbig.png'),
+  'social-anxietybig': require('../assets/home/social-anxietybig.png'),
+  huggingbig: require('../assets/home/huggingbig.png'),
 };
 
 const ArticleDetail = ({ route, navigation }) => {

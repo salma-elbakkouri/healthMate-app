@@ -4,55 +4,22 @@ import BottomMenu from './BottomMenu'; // Import BottomMenu component
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Chat = ({ navigation }) => {
-  const [fullName, setFullName] = useState('');
 
-  useEffect(() => {
-    fetchUserData();
-  }, []);
 
-  const fetchUserData = async () => {
-    try {
-      const userFullName = await AsyncStorage.getItem('userFullName');
-      console.log('User Full Name:', userFullName); // Log retrieved value for debugging
-      if (userFullName) {
-        setFullName(userFullName);
-      } else {
-        console.log('User full name not found.');
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
 
   return (
     <View style={styles.container}>
-      {/* Top White Header */}
-      {/* <View style={styles.whiteHeader}>
-        <View style={styles.headerContent}>
-          <View style={styles.leftContent}>
-            <Text style={styles.usernameText}>Hello {fullName}</Text>
-            <Text style={styles.healthText}>Improve Your Health</Text>
-          </View>
-          <View style={styles.rightContent}>
-            <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-              <Image
-                source={require('../assets/doctor.png')}
-                style={styles.profileImage}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View> */}
+   
 
-      {/* Main Content */}
       <View style={styles.content}>
         <Text style={styles.boldText}>Welcome to Dr. Chat</Text>
         <Text style={styles.subText}>
           Your virtual health assistant, ready to answer all your health-related questions.
         </Text>
-        <TouchableOpacity style={styles.chatButton} onPress={() => navigation.navigate('Chatbot')}>
+        <TouchableOpacity style={styles.chatButton} onPress={() => navigation.navigate('Conversation')}>
           <Text style={styles.chatButtonText}>Start Chatting</Text>
         </TouchableOpacity>
+        
         <Image
           source={require('../assets/drchat.png')}
           style={styles.image}

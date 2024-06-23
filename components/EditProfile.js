@@ -13,7 +13,7 @@ const EditProfile = ({ navigation }) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [loading, setLoading] = useState(true);
-  const [images, setImages] = useState([require('../assets/avatarboy.jpg'), require('../assets/avatargirl.png')]);
+  const [images, setImages] = useState([require('../assets/avatars/avatarboy.jpg'), require('../assets/avatars/avatargirl.png')]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0); // Initialize with default image index
   const [imageIndex, setImageIndex] = useState(0); // This will hold the fetched image index
 

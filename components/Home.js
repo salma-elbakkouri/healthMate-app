@@ -11,34 +11,34 @@ import Charts from '../components/Charts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const recordImages = {
-  india: require('../assets/steroids.png'), // Example image path, adjust as per your assets
-  usa: require('../assets/depression.png'), // Example image path, adjust as per your assets
+  india: require('../assets/home/steroids.png'), // Example image path, adjust as per your assets
+  usa: require('../assets/home/depression.png'), // Example image path, adjust as per your assets
   // Add more images as needed based on your recordsData structure
 };
 
 const articleImages = {
-  steroids: require('../assets/steroids.png'),
-  depression: require('../assets/depression.png'),
-  burgers: require('../assets/burgers.png'),
-  'social-anxiety': require('../assets/social-anxiety.png'),
-  hugging: require('../assets/hugging.png'),
+  steroids: require('../assets/home/steroids.png'),
+  depression: require('../assets/home/depression.png'),
+  burgers: require('../assets/home/burgers.png'),
+  'social-anxiety': require('../assets/home/social-anxiety.png'),
+  hugging: require('../assets/home/hugging.png'),
 };
 
 const tipImages = {
-  depressiontip: require('../assets/depressiontip.png'),
-  nutritiontip: require('../assets/nutritiontip.png'),
-  catshealthtip: require('../assets/catshealthtip.png'),
-  socialmediatip: require('../assets/socialmediatip.png'),
+  depressiontip: require('../assets/home/depressiontip.png'),
+  nutritiontip: require('../assets/home/nutritiontip.png'),
+  catshealthtip: require('../assets/home/catshealthtip.png'),
+  socialmediatip: require('../assets/home/socialmediatip.png'),
 };
 
 
 const recordsImages = {
-  heart: require('../assets/heart.jpg'),
-  cancer: require('../assets/cancer.jpg'),
-  kidney: require('../assets/kidney2.png'),
-  cells: require('../assets/cells2.png'),
-  kidneytumors: require('../assets/kidneytumors2.png'),
-  lungs: require('../assets/lungs2.png'),
+  heart: require('../assets/home/heart.jpg'),
+  cancer: require('../assets/home/cancer.jpg'),
+  kidney: require('../assets/home/kidney2.png'),
+  cells: require('../assets/home/cells2.png'),
+  kidneytumors: require('../assets/home/kidneytumors2.png'),
+  lungs: require('../assets/home/lungs2.png'),
 };
 
 
@@ -47,7 +47,7 @@ const Home = ({ navigation }) => {
   const [statsData, setStatsData] = useState([]);
   const scrollY = useRef(new Animated.Value(0)).current;
   const [fullName, setFullName] = useState('');
-  const [profileImage, setProfileImage] = useState(require('../assets/avatarboy.jpg'));
+  const [profileImage, setProfileImage] = useState(require('../assets/avatars/avatarboy.jpg'));
 
 
 
@@ -96,9 +96,9 @@ const Home = ({ navigation }) => {
   const updateProfileImage = (index) => {
     // Check index and set the appropriate image
     if (index === '1') {
-      setProfileImage(require('../assets/avatargirl.png'));
+      setProfileImage(require('../assets/avatars/avatargirl.png'));
     } else {
-      setProfileImage(require('../assets/avatarboy.jpg'));
+      setProfileImage(require('../assets/avatars/avatarboy.jpg'));
     }
   };
 

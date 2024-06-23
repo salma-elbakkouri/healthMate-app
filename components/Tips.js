@@ -5,10 +5,10 @@ import tipsData from '../assets/tips.json';
 import BottomMenu from '../components/BottomMenu';
 
 const tipImages = {
-  depressiontip: require('../assets/depressiontip.png'),
-  nutritiontip: require('../assets/nutritiontip.png'),
-  catshealthtip: require('../assets/catshealthtip.png'),
-  socialmediatip: require('../assets/socialmediatip.png'),
+  depressiontip: require('../assets/home/depressiontip.png'),
+  nutritiontip: require('../assets/home/nutritiontip.png'),
+  catshealthtip: require('../assets/home/catshealthtip.png'),
+  socialmediatip: require('../assets/home/socialmediatip.png'),
 };
 
 const Tips = ({ navigation }) => {

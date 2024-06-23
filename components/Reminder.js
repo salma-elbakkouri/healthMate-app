@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, FlatList, ActivityIndicator } from 'react-native';
 import BottomMenu from './BottomMenu';
 import { fetchMedicineReminders, deleteMedicineReminder } from '../config/authFunctions';
 import { getAuth } from 'firebase/auth';
 import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import * as Notifications from 'expo-notifications';
 
 const Reminder = ({ navigation }) => {
   const [medicines, setMedicines] = useState([]);
+  const [loading, setLoading] = useState(true);
   const auth = getAuth();
   const userId = auth.currentUser.uid;
 
@@ -16,6 +18,7 @@ const Reminder = ({ navigation }) => {
       const fetchedMedicines = await fetchMedicineReminders(userId);
       setMedicines(fetchedMedicines);
       logReminders(fetchedMedicines); // Log all details including doses
+      setLoading(false);
     };
 
     loadReminders();
@@ -24,9 +27,11 @@ const Reminder = ({ navigation }) => {
   useFocusEffect(
     React.useCallback(() => {
       const loadReminders = async () => {
+        setLoading(true);
         const fetchedMedicines = await fetchMedicineReminders(userId);
         setMedicines(fetchedMedicines);
         logReminders(fetchedMedicines); // Log all details including doses
+        setLoading(false);
       };
 
       loadReminders();
@@ -75,7 +80,7 @@ const Reminder = ({ navigation }) => {
   // Render only pill name, amount, and frequency in the UI
   const renderItem = ({ item }) => (
     <View style={styles.card}>
-      <Image source={require('../assets/pill.png')} style={styles.pillImage} />
+      <Image source={require('../assets/calend.png')} style={styles.pillImage} />
       <View style={styles.cardContent}>
         <Text style={styles.pillName}>{item.pillName}</Text>
         <View style={styles.tagContainer}>
@@ -89,12 +94,11 @@ const Reminder = ({ navigation }) => {
       </View>
       <View style={styles.iconColumn}>
         <TouchableOpacity style={styles.iconButton} onPress={() => handleDelete(item.id)}>
-          <Icon name="trash" size={20} color="#5b548d" />
+          <Icon name="trash" size={20} color="#667ad9" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('UpdateMedicineReminder', { reminderId: item.id })}>
-          <Icon name="pencil" size={20} color="#5b548d" />
+          <Icon name="pencil" size={20} color="#667ad9" />
         </TouchableOpacity>
-
       </View>
     </View>
   );
@@ -105,9 +109,13 @@ const Reminder = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="chevron-left" size={16} color="#1E3C42" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Your Medicines</Text>
+        <Text style={styles.headerTitle}>Medicines</Text>
       </View>
-      {medicines.length === 0 ? (
+      {loading ? (
+        <View style={styles.centeredContainer}>
+          <ActivityIndicator size="large" color="#4D869C" />
+        </View>
+      ) : medicines.length === 0 ? (
         <View style={styles.centeredContainer}>
           <Text style={styles.text}>Oops no medication reminders found!!</Text>
           <Image source={require('../assets/notfound.png')} style={styles.notfound} />
