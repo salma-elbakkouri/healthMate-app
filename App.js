@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { registerForPushNotificationsAsync } from './components/notificationssending';
 import * as Notifications from 'expo-notifications';
+import { LogBox } from 'react-native';
 
 import Home from './components/Home';
 import Articles from './components/Articles';
@@ -23,6 +24,7 @@ import NewMedicineReminder from './components/NewMedicineReminder';
 import UpdateMedicineReminder from './components/UpdateMedicineReminder';
 import Conversation from './components/Conversation';
 import './components/notifsetup'; // Ensure correct casing
+import Chatbot from './components/Chatbot';
 
 const Stack = createStackNavigator();
 
@@ -41,6 +43,7 @@ const App = () => {
   }, []);
 
   console.disableYellowBox = true;
+  LogBox.ignoreAllLogs(true); // This disables all log notifications
 
   return (
     <NavigationContainer>
@@ -63,6 +66,7 @@ const App = () => {
         <Stack.Screen name="NewMedicineReminder" component={NewMedicineReminder} />
         <Stack.Screen name="UpdateMedicineReminder" component={UpdateMedicineReminder} />
         <Stack.Screen name="Conversation" component={Conversation} />
+        <Stack.Screen name="Chatbot" component={Chatbot} />
       </Stack.Navigator>
     </NavigationContainer>
   );

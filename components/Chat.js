@@ -16,7 +16,7 @@ const Chat = ({ navigation }) => {
         <Text style={styles.subText}>
           Your virtual health assistant, ready to answer all your health-related questions.
         </Text>
-        <TouchableOpacity style={styles.chatButton} onPress={() => navigation.navigate('Conversation')}>
+        <TouchableOpacity style={styles.chatButton} onPress={() => navigation.navigate('Chatbot')}>
           <Text style={styles.chatButtonText}>Start Chatting</Text>
         </TouchableOpacity>
         
